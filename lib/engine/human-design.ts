@@ -1,0 +1,77 @@
+export interface GateInfo {
+    number: number;
+    label: string; // I-Ching / HD Name
+    shadow: string; // Gene Key Shadow
+    gift: string;   // Gene Key Gift
+    siddhi: string; // Gene Key Siddhi
+    circuit: "Tribal" | "Individual" | "Collective" | "Integration" | "Unknown";
+}
+
+// Full 64-Gate Kernel (Gene Keys + I-Ching)
+// Data sourced from standard Human Design / Gene Keys corpus to match Colab intent
+export const GATE_KERNEL: Record<number, GateInfo> = {
+    1: { number: 1, label: "The Creative", shadow: "Entropy", gift: "Freshness", siddhi: "Beauty", circuit: "Individual" },
+    2: { number: 2, label: "The Receptive", shadow: "Dislocation", gift: "Orientation", siddhi: "Unity", circuit: "Individual" },
+    3: { number: 3, label: "Difficulty at the Beginning", shadow: "Chaos", gift: "Innovation", siddhi: "Innocence", circuit: "Individual" },
+    4: { number: 4, label: "Youthful Folly", shadow: "Intolerance", gift: "Understanding", siddhi: "Forgiveness", circuit: "Collective" },
+    5: { number: 5, label: "Waiting", shadow: "Impatience", gift: "Patience", siddhi: "Timelessness", circuit: "Collective" },
+    6: { number: 6, label: "Conflict", shadow: "Conflict", gift: "Diplomacy", siddhi: "Peace", circuit: "Tribal" },
+    7: { number: 7, label: "The Army", shadow: "Division", gift: "Guidance", siddhi: "Virtue", circuit: "Collective" },
+    8: { number: 8, label: "Holding Together", shadow: "Mediocrity", gift: "Style", siddhi: "Exquisiteness", circuit: "Individual" },
+    9: { number: 9, label: "The Taming Power of the Small", shadow: "Inertia", gift: "Determination", siddhi: "Invincibility", circuit: "Collective" },
+    10: { number: 10, label: "Treading", shadow: "Self-Obsession", gift: "Naturalness", siddhi: "Being", circuit: "Individual" },
+    11: { number: 11, label: "Peace", shadow: "Obscurity", gift: "Idealism", siddhi: "Light", circuit: "Collective" },
+    12: { number: 12, label: "Standstill", shadow: "Vanity", gift: "Discrimination", siddhi: "Purity", circuit: "Individual" },
+    13: { number: 13, label: "Fellowship with Men", shadow: "Discord", gift: "Discernment", siddhi: "Empathy", circuit: "Collective" },
+    14: { number: 14, label: "Possession in Great Measure", shadow: "Compromise", gift: "Competence", siddhi: "Bounteousness", circuit: "Individual" },
+    15: { number: 15, label: "Modesty", shadow: "Dullness", gift: "Magnetism", siddhi: "Florescence", circuit: "Collective" },
+    16: { number: 16, label: "Enthusiasm", shadow: "Indifference", gift: "Versatility", siddhi: "Mastery", circuit: "Collective" },
+    17: { number: 17, label: "Following", shadow: "Opinion", gift: "Far-Sightedness", siddhi: "Omniscience", circuit: "Collective" },
+    18: { number: 18, label: "Work on What Has Been Spoiled", shadow: "Judgment", gift: "Integrity", siddhi: "Perfection", circuit: "Collective" },
+    19: { number: 19, label: "Approach", shadow: "Co-Dependence", gift: "Sensitivity", siddhi: "Sacrifice", circuit: "Tribal" },
+    20: { number: 20, label: "Contemplation", shadow: "Superficiality", gift: "Self-Assurance", siddhi: "Presence", circuit: "Integration" },
+    21: { number: 21, label: "Biting Through", shadow: "Control", gift: "Authority", siddhi: "Valour", circuit: "Tribal" },
+    22: { number: 22, label: "Grace", shadow: "Dishonour", gift: "Graciousness", siddhi: "Grace", circuit: "Individual" },
+    23: { number: 23, label: "Splitting Apart", shadow: "Complexity", gift: "Simplicity", siddhi: "Quintessence", circuit: "Individual" },
+    24: { number: 24, label: "Return", shadow: "Addiction", gift: "Invention", siddhi: "Silence", circuit: "Individual" },
+    25: { number: 25, label: "Innocence", shadow: "Constriction", gift: "Acceptance", siddhi: "Universal Love", circuit: "Individual" },
+    26: { number: 26, label: "The Taming Power of the Great", shadow: "Pride", gift: "Artfulness", siddhi: "Invisibility", circuit: "Tribal" },
+    27: { number: 27, label: "The Corners of the Mouth", shadow: "Selfishness", gift: "Altruism", siddhi: "Selflessness", circuit: "Tribal" },
+    28: { number: 28, label: "Preponderance of the Great", shadow: "Purposelessness", gift: "Totality", siddhi: "Immortality", circuit: "Individual" },
+    29: { number: 29, label: "The Abysmal", shadow: "Half-Heartedness", gift: "Commitment", siddhi: "Devotion", circuit: "Collective" },
+    30: { number: 30, label: "The Clinging Fire", shadow: "Desire", gift: "Lightness", siddhi: "Rapture", circuit: "Collective" },
+    31: { number: 31, label: "Influence", shadow: "Arrogance", gift: "Leadership", siddhi: "Humility", circuit: "Collective" },
+    32: { number: 32, label: "Duration", shadow: "Failure", gift: "Preservation", siddhi: "Veneration", circuit: "Tribal" },
+    33: { number: 33, label: "Retreat", shadow: "Forgetting", gift: "Mindfulness", siddhi: "Revelation", circuit: "Collective" },
+    34: { number: 34, label: "The Power of the Great", shadow: "Force", gift: "Strength", siddhi: "Majesty", circuit: "Integration" },
+    35: { number: 35, label: "Progress", shadow: "Hunger", gift: "Adventure", siddhi: "Boundlessness", circuit: "Collective" },
+    36: { number: 36, label: "Darkening of the Light", shadow: "Turbulence", gift: "Humanity", siddhi: "Compassion", circuit: "Collective" },
+    37: { number: 37, label: "The Family", shadow: "Weakness", gift: "Equality", siddhi: "Tenderness", circuit: "Tribal" },
+    38: { number: 38, label: "Opposition", shadow: "Struggle", gift: "Perseverance", siddhi: "Honour", circuit: "Individual" },
+    39: { number: 39, label: "Obstruction", shadow: "Provocation", gift: "Dynamism", siddhi: "Liberation", circuit: "Individual" },
+    40: { number: 40, label: "Deliverance", shadow: "Exhaustion", gift: "Resolve", siddhi: "Divine Will", circuit: "Tribal" },
+    41: { number: 41, label: "Decrease", shadow: "Fantasy", gift: "Anticipation", siddhi: "Emanation", circuit: "Collective" },
+    42: { number: 42, label: "Increase", shadow: "Expectation", gift: "Detachment", siddhi: "Celebration", circuit: "Collective" },
+    43: { number: 43, label: "Breakthrough", shadow: "Deafness", gift: "Insight", siddhi: "Epiphany", circuit: "Individual" },
+    44: { number: 44, label: "Coming to Meet", shadow: "Interference", gift: "Teamwork", siddhi: "Synarchy", circuit: "Tribal" },
+    45: { number: 45, label: "Gathering Together", shadow: "Dominance", gift: "Synergy", siddhi: "Communion", circuit: "Tribal" },
+    46: { number: 46, label: "Pushing Upward", shadow: "Seriousness", gift: "Delight", siddhi: "Ecstasy", circuit: "Collective" },
+    47: { number: 47, label: "Oppression", shadow: "Oppression", gift: "Transmutation", siddhi: "Transfiguration", circuit: "Collective" },
+    48: { number: 48, label: "The Well", shadow: "Inadequacy", gift: "Resourcefulness", siddhi: "Wisdom", circuit: "Collective" },
+    49: { number: 49, label: "Revolution", shadow: "Reaction", gift: "Revolution", siddhi: "Rebirth", circuit: "Tribal" },
+    50: { number: 50, label: "The Cauldron", shadow: "Corruption", gift: "Equilibrium", siddhi: "Harmony", circuit: "Tribal" },
+    51: { number: 51, label: "The Arousing", shadow: "Agitation", gift: "Initiative", siddhi: "Awakening", circuit: "Individual" },
+    52: { number: 52, label: "Keeping Still", shadow: "Stress", gift: "Restraint", siddhi: "Stillness", circuit: "Collective" },
+    53: { number: 53, label: "Development", shadow: "Immaturity", gift: "Expansion", siddhi: "Superabundance", circuit: "Collective" },
+    54: { number: 54, label: "The Marrying Maiden", shadow: "Greed", gift: "Aspiration", siddhi: "Ascension", circuit: "Tribal" },
+    55: { number: 55, label: "Abundance", shadow: "Victimisation", gift: "Freedom", siddhi: "Freedom", circuit: "Individual" },
+    56: { number: 56, label: "The Wanderer", shadow: "Distraction", gift: "Enrichment", siddhi: "Intoxication", circuit: "Collective" },
+    57: { number: 57, label: "The Gentle", shadow: "Unease", gift: "Intuition", siddhi: "Clarity", circuit: "Individual" },
+    58: { number: 58, label: "The Joyous", shadow: "Dissatisfaction", gift: "Vitality", siddhi: "Bliss", circuit: "Collective" },
+    59: { number: 59, label: "Dispersion", shadow: "Dishonesty", gift: "Intimacy", siddhi: "Transparency", circuit: "Tribal" },
+    60: { number: 60, label: "Limitation", shadow: "Limitation", gift: "Realism", siddhi: "Justice", circuit: "Individual" },
+    61: { number: 61, label: "Inner Truth", shadow: "Psychosis", gift: "Inspiration", siddhi: "Sanctity", circuit: "Individual" },
+    62: { number: 62, label: "Preponderance of the Small", shadow: "Intellect", gift: "Precision", siddhi: "Impeccability", circuit: "Collective" },
+    63: { number: 63, label: "After Completion", shadow: "Doubt", gift: "Inquiry", siddhi: "Truth", circuit: "Collective" },
+    64: { number: 64, label: "Before Completion", shadow: "Confusion", gift: "Imagination", siddhi: "Illumination", circuit: "Collective" }
+};

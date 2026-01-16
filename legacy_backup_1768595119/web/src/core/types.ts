@@ -1,0 +1,3 @@
+export type StateMode = 'SCATTER' | 'FORMATION' | 'MANDALA' | 'PARKED';
+export type CameraMode = 'FLOOR' | 'VORTEX' | 'AXIS' | 'SPIRAL_TIME';
+export interface RenderConfig { version:'v1'; state:{ mode:StateMode; coherence:number; tension:number; phase:number; velocity:number; }; camera:{ mode:CameraMode; }; lod:{ nearRadius:number; midRadius:number; farRadius:number; tileBudget:number; }; timeline:{ enabled:boolean; }; familyCount:number; }

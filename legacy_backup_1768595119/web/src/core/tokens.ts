@@ -1,0 +1,1 @@
+export const TOKENS = { colors: { void: 0x000000, grid: 0x1B1F26, stroke: 0xE8EEF5, accentCyan: 0x3CFBFF, goldClosure: 0xD9B45A }, opacity: { ghost: 0.08 }, iridescence: { attack: 0.06, hold: 0.08, decay: 0.42 } };
