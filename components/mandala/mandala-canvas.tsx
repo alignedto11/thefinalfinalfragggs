@@ -173,39 +173,54 @@ const fragmentShaderSource = `
     // Subtle inner glow at center
     float centerGlow = exp(-r * r * 8.0) * 0.08 * breatheMod;
     
-    // --- REALISTIC CYMATIC (Water + Light) ---
-    // Use radial bands for coherent color rings
-    // Modulate with Chladni pattern for water-ripple effect
+    // --- NATURAL CYMATIC COLORING (Organic Teal/Blue/Purple) ---
+    // Based on real cymatic photography - subtle, desaturated, natural tones
     
-    // ROYGBP Realistic Spectrum (Red-Orange-Yellow-Green-Blue-Purple)
-    // Map radial distance to hue (0.0 = Red, 0.16 = Orange, 0.33 = Yellow, 0.5 = Green, 0.66 = Blue, 0.83 = Purple)
-    float hue = fract(r * 2.5 - t * 0.15 + pattern * 0.3); // Cycle through spectrum radially
+    // Use radial + pattern for smooth color variation
+    float colorBase = r * 1.8 + pattern * 0.4 - t * 0.08;
     
-    // HSV to RGB conversion
-    vec3 hsvColor = vec3(hue, 0.7, 1.0); // Saturation 0.7 for realistic tones
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p_hsv = abs(fract(hsvColor.xxx + K.xyz) * 6.0 - K.www);
-    vec3 baseColor = hsvColor.z * mix(K.xxx, clamp(p_hsv - K.xxx, 0.0, 1.0), hsvColor.y);
+    // Natural palette: Deep blue -> Teal -> Cyan -> Pale Blue/Purple
+    // Using smooth cosine interpolation for organic transitions
+    vec3 color1 = vec3(0.05, 0.15, 0.35); // Deep blue (dark water)
+    vec3 color2 = vec3(0.10, 0.35, 0.45); // Teal
+    vec3 color3 = vec3(0.15, 0.50, 0.60); // Cyan
+    vec3 color4 = vec3(0.25, 0.45, 0.65); // Pale blue
+    vec3 color5 = vec3(0.30, 0.35, 0.55); // Subtle purple
     
-    // Apply pattern as water ripples
-    // Sharp pattern = bright water crest, low pattern = dark trough
-    float waterIntensity = pattern * 0.8 + 0.2; // Keep some ambient visibility
+    // Smooth color transitions based on radius
+    vec3 baseColor;
+    if (colorBase < 0.25) {
+      baseColor = mix(color1, color2, smoothstep(0.0, 0.25, colorBase));
+    } else if (colorBase < 0.5) {
+      baseColor = mix(color2, color3, smoothstep(0.25, 0.5, colorBase));
+    } else if (colorBase < 0.75) {
+      baseColor = mix(color3, color4, smoothstep(0.5, 0.75, colorBase));
+    } else {
+      baseColor = mix(color4, color5, smoothstep(0.75, 1.0, colorBase));
+    }
     
-    // Final composition
-    vec3 finalColor = baseColor * waterIntensity * 3.0;
+    // Apply pattern as water ripples (subtle intensity modulation)
+    float waterIntensity = pattern * 0.6 + 0.4; // More ambient light
     
-    // Add specular highlights (like light reflecting on water)
-    float specular = pow(pattern, 8.0) * 2.0;
-    finalColor += vec3(1.0) * specular;
+    // Final composition with natural brightness
+    vec3 finalColor = baseColor * waterIntensity * 4.5;
     
-    // Center glow (soft white like a light source)
-    finalColor += vec3(0.9, 0.95, 1.0) * centerGlow * 2.0;
+    // Subtle specular highlights (not harsh whites)
+    float specular = pow(pattern, 12.0) * 1.2;
+    finalColor += vec3(0.6, 0.7, 0.8) * specular; // Soft blue-white highlights
     
-    // Vignette (dark edges)
-    finalColor *= smoothstep(1.1, 0.4, r);
+    // Center glow (soft warm light, like sunlight through water)
+    finalColor += vec3(0.4, 0.5, 0.6) * centerGlow * 2.5;
+    
+    // Natural vignette
+    finalColor *= smoothstep(1.15, 0.35, r);
 
-    // Tone map (soft clamp)
-    finalColor = finalColor / (finalColor + vec3(0.5));
+    // Gentle tone mapping (preserve subtlety)
+    finalColor = finalColor / (finalColor + vec3(0.6));
+    
+    // Slight desaturation for realism
+    float luma = dot(finalColor, vec3(0.299, 0.587, 0.114));
+    finalColor = mix(vec3(luma), finalColor, 0.75); // 75% saturation
     
     gl_FragColor = vec4(finalColor, 1.0);
   }
