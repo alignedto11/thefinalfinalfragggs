@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react"
 import { motion } from "framer-motion"
-import { Mandala } from "./mandala"
+import { Mandala } from "@/components/mandala/mandala"
 import { MandalaState } from "@/lib/state"
 
 interface CollectiveFloorProps {

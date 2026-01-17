@@ -158,7 +158,7 @@ const fragmentShaderSource = `
       color = clamp(color, 0.0, 1.0);
       gl_FragColor = vec4(color, 1.0);
     }
-  
+  `
 
 function createShader(gl: WebGLRenderingContext, type: number, source: string): WebGLShader | null {
   const shader = gl.createShader(type)
