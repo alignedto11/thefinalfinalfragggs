@@ -20,6 +20,7 @@ const vertexShaderSource = `
 `
 
 // Enhanced Fragment shader - cymatic mandala with fluid somatic animation
+// Aesthetic: Gasoline on hot concrete, iridescent, electric structure
 const fragmentShaderSource = `
   #ifdef GL_ES
   precision highp float;
@@ -32,6 +33,14 @@ const fragmentShaderSource = `
   uniform float u_velocity;
   uniform float u_coherence;
   uniform float u_seed;
+
+  // Constants for coloring
+  const vec3 colVoid = vec3(0.01, 0.02, 0.03); 
+  const vec3 colCyan = vec3(0.0, 1.0, 0.95); 
+  const vec3 colElectricBlue = vec3(0.1, 0.6, 1.0);
+  const vec3 colDeepTeal = vec3(0.0, 0.25, 0.28);
+  const vec3 colGold = vec3(1.0, 0.75, 0.1);
+  const vec3 colOrange = vec3(1.0, 0.35, 0.0);
 
   // Improved hash for smoother noise
   float hash21(vec2 p) {
@@ -54,17 +63,32 @@ const fragmentShaderSource = `
     return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
   }
 
-  // Enhanced FBM with more octaves for smoother result
+  // Fractional Brownian Motion
   float fbm(vec2 p) {
     float v = 0.0;
     float a = 0.5;
     mat2 rot = mat2(0.8, 0.6, -0.6, 0.8);
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 5; i++) {
       v += a * noise(p);
-      p = rot * p * 2.0 + vec2(100.0);
-      a *= 0.5;
+      p = rot * p * 2.1 + vec2(1.5, 4.2);
+      a *= 0.48;
     }
     return v;
+  }
+
+  // Iridescent "Gasoline" color spectrum
+  vec3 getGasolineColor(float t) {
+    vec3 c1 = vec3(0.0, 0.8, 1.0); // Cyan
+    vec3 c2 = vec3(0.5, 0.0, 1.0); // Purple
+    vec3 c3 = vec3(1.0, 0.7, 0.0); // Gold
+    vec3 c4 = vec3(0.0, 1.0, 0.5); // Green
+    
+    float mask1 = smoothstep(0.0, 0.25, t) * (1.0 - smoothstep(0.25, 0.5, t));
+    float mask2 = smoothstep(0.25, 0.5, t) * (1.0 - smoothstep(0.5, 0.75, t));
+    float mask3 = smoothstep(0.5, 0.75, t) * (1.0 - smoothstep(0.75, 1.0, t));
+    float mask4 = smoothstep(0.75, 1.0, t);
+    
+    return c1 * mask1 + c2 * mask2 + c3 * mask3 + c4 * mask4;
   }
 
   void main() {
@@ -72,96 +96,73 @@ const fragmentShaderSource = `
     float r = length(uv);
     float angle = atan(uv.y, uv.x);
     
-    float t = u_time * 0.15; // Slightly faster for organic feel
+    // Slow, organic time
+    float t = u_time * (0.1 + u_velocity * 0.2);
     
-    // STRICT 8-FOLD SYMMETRY ENFORCEMENT
+    // 8-FOLD SYMMETRY
     float symmetry = 8.0;
-    float segmentAngle = 3.14159 * 2.0 / symmetry;
+    float segmentAngle = 6.28318 / symmetry;
     float a = mod(angle, segmentAngle) - segmentAngle * 0.5;
-    a = abs(a); // Mirror symmetry within segment for perfect 8-fold caleidoscope
+    a = abs(a); // Kaleidoscope mirror
     
-    // Polar coordinates in symmetry space
+    // Reconstruct symmetrical UV
     vec2 p = vec2(cos(a), sin(a)) * r;
     
-    // Domain warping for organic "fluid" cymatics
-    // We warp the coordinate space itself before drawing the pattern
-    vec2 warp = vec2(
-        fbm(p * 5.0 + t * 0.5),
-        fbm(p * 5.0 - t * 0.5)
-    ) * 0.1 * u_coherence;
+    // DOMAIN WARPING (Fluid Motion)
+    vec2 warp1 = vec2(fbm(p * 3.0 + t), fbm(p * 3.0 - t));
+    vec2 warp2 = vec2(fbm(p * 6.0 + warp1 * 2.0 + t * 0.5), fbm(p * 6.0 + warp1 * 2.0 - t * 0.5));
+    vec2 finalP = p + warp2 * 0.15 * u_coherence;
     
-    // CYMATIC WAVE FUNCTIONS
-    // 1. Radial resonance (Standing waves)
-    float radial = sin(r * 20.0 - t * 2.0 + warp.x * 5.0);
+    // CYMATIC INTERFERENCE
+    // Dynamic frequencies based on u_seed and u_pressure
+    float freq1 = 12.0 + u_seed * 10.0;
+    float freq2 = 24.0 + u_pressure * 15.0;
     
-    // 2. Angular resonance (Petals/Spokes)
-    float angular = cos(a * 4.0 * symmetry); 
+    float wave1 = sin(length(finalP) * freq1 - t * 3.0);
+    float wave2 = cos(a * symmetry * 2.0 + length(finalP) * 5.0);
+    float pattern = wave1 * wave2;
     
-    // 3. Interference Pattern (Chladni Plate approximation)
-    float interference = radial * angular;
+    // Interference refinement
+    float interference = abs(pattern);
+    interference = pow(interference, 0.8 + u_clarity * 0.5);
     
-    // Incorporate "Seed" and "Clarity" state from user
-    interference += sin(r * 30.0 * u_seed + a * 10.0) * 0.2;
+    // LAYERING COLORS
+    // 1. VOID / CONCRETE (Background)
+    float concreteNoise = fbm(uv * 50.0) * 0.05;
+    vec3 color = colVoid + concreteNoise;
     
-    // CELLULAR STRUCTURE DEFINITION
-    // We want clear separation between "nodes" (lines) and "antinodes" (spaces)
-    float cellWall = abs(interference);
-    // Sharpen the walls drastically
-    float sharpness = 4.0 + (u_clarity * 4.0); // Dynamic sharpness
-    cellWall = pow(smoothstep(0.0, 0.2, cellWall), 0.5); // Normalize
+    // 2. OILY INTERIORS (Deep Teal + Iridescence)
+    float interiorMask = smoothstep(0.1, 0.8, interference);
+    vec3 oilyColor = mix(colDeepTeal, getGasolineColor(fract(r * 2.0 - t * 0.5)), 0.3);
+    color = mix(color, oilyColor, interiorMask * 0.6);
     
-    // Define the distinct regions
-    // 1. LINES (Electric Cyan) - The nodes where vibration is minimal (sand gathers) mechanism inverted for light
-    float lines = 1.0 - smoothstep(0.02, 0.05, cellWall); 
+    // 3. ELECTRIC LINES (Cyan Structure)
+    float lineMask = 1.0 - smoothstep(0.0, 0.08, abs(interference - 0.1));
+    lineMask *= smoothstep(0.0, 0.5, r); // Fade center
+    color += colCyan * lineMask * 1.5;
+    color += colElectricBlue * lineMask * 0.5;
     
-    // 2. INTERIORS (Deep Teal) - The vibrating plates
-    float interior = smoothstep(0.05, 0.5, cellWall);
+    // 4. NODAL HIGHLIGHTS (Gold/Orange)
+    float highlightMask = smoothstep(0.85, 1.0, interference);
+    vec3 highlightCol = mix(colOrange, colGold, sin(t * 2.0) * 0.5 + 0.5);
+    color += highlightCol * highlightMask * u_pressure;
     
-    // 3. HIGHLIGHTS (Gold/Orange) - High energy intersection points
-    float highlightMask = smoothstep(0.8, 1.0, abs(radial * angular));
+    // 5. CENTER GLOW (The Source)
+    float center = 1.0 - smoothstep(0.0, 0.15, r);
+    color += colCyan * center * 2.0;
+    color += vec3(1.0) * pow(center, 4.0); // Hard core
     
-    // COLOR PALETTE
-    vec3 colVoid = vec3(0.0, 0.02, 0.04); // Almost black
-    
-    // Electric Cyan (#00FFFF base)
-    vec3 colCyan = vec3(0.0, 1.0, 1.0); 
-    vec3 colElectricBlue = vec3(0.0, 0.8, 1.0);
-    
-    // Deep Teal (#003333 base)
-    vec3 colDeepTeal = vec3(0.0, 0.2, 0.25);
-    vec3 colBrightTeal = vec3(0.0, 0.4, 0.5);
-    
-    // Gold/Orange
-    vec3 colGold = vec3(1.0, 0.8, 0.2);
-    vec3 colOrange = vec3(1.0, 0.4, 0.0);
-    
-    // COMPOSITION
-    vec3 color = colVoid;
-    
-    // Add Interior (Teal fluid)
-    // Add subtle variation within the ink
-    float inkVar = fbm(uv * 10.0 + t);
-    vec3 inkColor = mix(colDeepTeal, colBrightTeal, inkVar * 0.5 + 0.5);
-    color += inkColor * interior * 0.8;
-    
-    // Add Lines (Electric Cyan Structure)
-    // Make them glow
-    color += colElectricBlue * lines * 2.0;
-    color += colCyan * lines * 0.5; // Core brightness
-    
-    // Add Highlights (Gold Energy)
-    float pulse = 0.5 + 0.5 * sin(t * 5.0);
-    color += mix(colOrange, colGold, pulse) * highlightMask * interior * u_pressure;
-    
-    // Central "Source" Glow
-    float centerGlow = 1.0 / (r * 10.0 + 0.1);
-    centerGlow *= smoothstep(0.5, 0.0, r);
-    color += colCyan * centerGlow * 0.5;
+    // FINAL POLISH
+    // Atmospheric "Heat Ripple"
+    float ripple = sin(r * 40.0 - t * 10.0) * 0.005 * u_velocity;
+    color *= (1.0 + ripple);
     
     // Vignette
-    color *= smoothstep(1.2, 0.2, r);
+    color *= smoothstep(1.0, 0.3, r);
     
-    // Output
+    // Color breathing
+    color *= 0.9 + 0.1 * sin(t * 0.5);
+
     gl_FragColor = vec4(color, 1.0);
   }
 `
