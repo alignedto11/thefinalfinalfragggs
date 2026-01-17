@@ -103,10 +103,10 @@ export function Hero() {
             </div>
           </FadeUp>
 
-          {/* Mandala preview with breathing animation */}
+          {/* Mandala preview with breathing animation - CENTERED */}
           <FadeUp delay={600}>
-            <div className="mt-20 md:mt-24">
-              <div className="relative">
+            <div className="mt-20 md:mt-24 flex justify-center items-center">
+              <div className="relative flex justify-center items-center">
                 {/* Outer glow ring */}
                 <div className="absolute -inset-8 rounded-full bg-gradient-to-b from-muted/40 via-transparent to-transparent blur-3xl" />
 
@@ -122,7 +122,7 @@ export function Hero() {
                     state={cosmic ? cosmic.mandala : demoState}
                     size="lg"
                     seed={cosmic ? cosmic.numerology.universalDayNumber * 0.1 : 0.42}
-                    className="relative"
+                    className="relative mx-auto"
                   />
                 </div>
 

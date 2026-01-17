@@ -155,7 +155,19 @@ const fragmentShaderSource = `
     
     float lines = pattern * contrast; // Apply clarity contrast
 
-    // Smooth vignette with breathing
+    // --- ENHANCED FLOWING MOTION ---
+    // Add realistic water undulation
+    float flowSpeed = 0.12;
+    float flowTime = t * flowSpeed;
+    
+    // Multi-layered flow for organic feel
+    vec2 flow1 = vec2(sin(flowTime + angle * 2.0) * 0.015, cos(flowTime + angle * 2.0) * 0.015);
+    vec2 flow2 = vec2(cos(flowTime * 0.7 + angle) * 0.01, sin(flowTime * 0.7 - angle) * 0.01);
+    p += flow1 + flow2;
+    
+    // Recalculate after flow
+    r = length(p);
+    angle = atan(p.y, p.x);
     float vigEdge = 0.95 + breatheMod * 0.05;
     float vig = smoothstep(vigEdge, 0.15, r);
     

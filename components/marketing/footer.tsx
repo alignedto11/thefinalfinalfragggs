@@ -10,7 +10,10 @@ export function MarketingFooter() {
         <div className="flex flex-col items-center gap-6 text-center">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="h-5 w-5 rounded-full bg-foreground" />
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L22 20H2L12 2Z" fill="currentColor" className="text-foreground" />
+              <path d="M12 8L18 18H6L12 8Z" fill="currentColor" className="text-background" opacity="0.4" />
+            </svg>
             <span className="font-medium tracking-tight">DEFRAG</span>
           </div>
 

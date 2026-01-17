@@ -20,7 +20,10 @@ export function MarketingHeader() {
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <div className="h-6 w-6 rounded-full bg-foreground" />
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L22 20H2L12 2Z" fill="currentColor" className="text-foreground" />
+            <path d="M12 8L18 18H6L12 8Z" fill="currentColor" className="text-background" opacity="0.4" />
+          </svg>
           <span className="font-medium tracking-tight">DEFRAG</span>
         </Link>
 
