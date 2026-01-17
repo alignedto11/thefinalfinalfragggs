@@ -20,9 +20,9 @@ export function MarketingHeader() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
         {/* Logo - B/W Cymatic Mandala Style */}
-        <Link href="/" className="flex items-center gap-2">
-          <DefragLogo size={24} className="text-foreground" />
-          <span className="font-medium tracking-tight">DEFRAG</span>
+        <Link href="/" className="flex items-center gap-3 group transition-all">
+          <DefragLogo size={22} className="text-foreground group-hover:rotate-45 transition-transform duration-700" />
+          <span className="font-bold tracking-[-0.05em] text-lg">DEFRAG</span>
         </Link>
 
         {/* Desktop nav */}

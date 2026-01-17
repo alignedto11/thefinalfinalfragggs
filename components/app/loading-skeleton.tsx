@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 export function DashboardSkeleton() {
   return (
-    <div className="mx-auto max-w-lg px-4 py-6 space-y-6">
-      {/* Mandala skeleton */}
-      <div className="flex justify-center">
-        <Skeleton className="h-48 w-48 rounded-full" />
+    <div className="mx-auto max-w-lg px-4 py-12 space-y-8">
+      {/* Mandala skeleton - dual for comparison */}
+      <div className="flex flex-col items-center gap-12 py-4">
+        <Skeleton className="h-64 w-64 rounded-full" />
+        <Skeleton className="h-32 w-32 rounded-full opacity-60" />
       </div>
 
       {/* State card skeleton */}

@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { surface } from "@/lib/copy"
 import { Home, MessageCircle, Waves, Users, Settings } from "lucide-react"
+import { motion } from "framer-motion"
 
 const navItems = [
   { href: "/dashboard", label: surface.nav.dashboard, icon: Home },
@@ -24,14 +25,17 @@ export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname()
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-background selection:bg-cyan-500/10">
       {/* Main content */}
-      <main className="flex-1 pb-20">{children}</main>
+      <main className="flex-1 pb-24">{children}</main>
 
       {/* Bottom navigation (mobile-first) */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 backdrop-blur-sm">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/50 bg-background/80 backdrop-blur-xl">
+        {/* Subtle top glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-px bg-gradient-to-r from-transparent via-foreground/5 to-transparent" />
+
         <div
-          className="mx-auto flex h-16 max-w-lg items-center justify-around px-2"
+          className="mx-auto flex h-16 max-w-lg items-center justify-around px-4"
           style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         >
           {navItems.map((item) => {
@@ -43,12 +47,19 @@ export function AppShell({ children }: AppShellProps) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-1 rounded-lg px-3 py-2 transition-colors",
-                  isActive ? "text-foreground" : "text-muted-foreground",
+                  "relative flex flex-col items-center justify-center gap-1.5 px-3 py-1 transition-all duration-300",
+                  isActive ? "text-foreground scale-110" : "text-muted-foreground hover:text-foreground/70",
                 )}
               >
-                <Icon className="h-5 w-5" strokeWidth={isActive ? 2 : 1.5} />
-                <span className="text-[10px] font-medium">{item.label}</span>
+                {isActive && (
+                  <motion.div
+                    layoutId="nav-pill"
+                    className="absolute -inset-x-1 -inset-y-1 rounded-xl bg-muted z-0"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                <Icon className="relative z-10 h-5 w-5" strokeWidth={isActive ? 2.5 : 1.5} />
+                <span className="relative z-10 text-[9px] font-bold uppercase tracking-wider">{item.label}</span>
               </Link>
             )
           })}

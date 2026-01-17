@@ -98,19 +98,19 @@ export default async function DashboardPage() {
       </div>
 
       {/* Mandala Comparison */}
-      <div className="mb-12 flex flex-col items-center gap-8">
+      <div className="mb-16 flex flex-col items-center justify-center">
         {/* Daily Reactive Mandala */}
-        <div className="relative group">
-          <p className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-widest text-muted-foreground opacity-50">Current State</p>
-          <div className="absolute -inset-4 rounded-full bg-cyan-500/10 blur-2xl transition-opacity group-hover:opacity-100 opacity-60" />
-          <Mandala state={currentState} size="lg" seed={seed} className="relative z-10 border border-white/5 shadow-2xl" />
+        <div className="relative group mb-12">
+          <p className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 whitespace-nowrap">Current Resonance</p>
+          <div className="absolute -inset-12 rounded-full bg-cyan-500/10 blur-3xl transition-opacity group-hover:opacity-100 opacity-60 z-0" />
+          <Mandala state={currentState} size="lg" seed={seed} className="relative z-10 border border-white/5 shadow-2xl scale-110" />
         </div>
 
         {/* Natal Baseline Mandala - Smaller, labeled "Home" */}
-        <div className="relative group opacity-80 hover:opacity-100 transition-opacity">
-          <p className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-widest text-muted-foreground opacity-50">Home Frequency</p>
-          <div className="absolute -inset-2 rounded-full bg-blue-500/5 blur-xl group-hover:opacity-50 opacity-0" />
-          <NatalMandala birthData={birthData} size="sm" className="relative z-10 grayscale-[0.5] hover:grayscale-0 transition-all duration-700 border border-white/5" />
+        <div className="relative group opacity-60 hover:opacity-100 transition-all duration-700 mt-4">
+          <p className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground/40 whitespace-nowrap">Home Frequency</p>
+          <div className="absolute -inset-6 rounded-full bg-blue-500/5 blur-2xl group-hover:opacity-50 opacity-0 z-0" />
+          <NatalMandala birthData={birthData} size="sm" className="relative z-10 grayscale-[0.8] hover:grayscale-0 transition-all duration-1000 border border-white/5 opacity-80" />
         </div>
       </div>
 

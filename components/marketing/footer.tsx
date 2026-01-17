@@ -10,9 +10,9 @@ export function MarketingFooter() {
       <div className="mx-auto max-w-5xl px-4 py-12">
         <div className="flex flex-col items-center gap-6 text-center">
           {/* Logo - B/W Cymatic Mandala Style */}
-          <div className="flex items-center gap-2">
-            <DefragLogo size={20} className="text-foreground" />
-            <span className="font-medium tracking-tight">DEFRAG</span>
+          <div className="flex items-center gap-3">
+            <DefragLogo size={18} className="text-foreground opacity-60" />
+            <span className="font-bold tracking-[-0.05em] text-base opacity-80">DEFRAG</span>
           </div>
 
           {/* Tagline */}

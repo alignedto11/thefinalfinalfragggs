@@ -19,8 +19,8 @@ const vertexShaderSource = `
   }
 `
 
-  // Ultra-High-Fidelity Fragment shader - cymatic mandala with fluid iridescence
-  const fragmentShaderSource = `
+// Ultra-High-Fidelity Fragment shader - cymatic mandala with fluid iridescence
+const fragmentShaderSource = `
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -35,20 +35,21 @@ const vertexShaderSource = `
 
     #define PI 3.14159265359
 
-    // Simplified thin-film interference / iridescence palette
-    vec3 getIridescence(float t, float angle) {
-      // Gasoline palette: Cyan, Magenta, Gold, Teal
+    // High fidelity iridescence based on thin-film interference
+    vec3 getIridescence(float t, float dist) {
+      // Gasoline/Oil slick palette: Deep Teals, Electric Cyans, Magentas, and Gold
       vec3 a = vec3(0.5, 0.5, 0.5);
       vec3 b = vec3(0.5, 0.5, 0.5);
       vec3 c = vec3(1.0, 1.0, 1.0);
-      vec3 d = vec3(0.00, 0.33, 0.67); // Cyan-Teal shift
+      vec3 d = vec3(0.3, 0.2, 0.2); // Phase shifts
       
-      // Secondary shift based on angle and time
-      vec3 col = a + b * cos(2.0 * PI * (c * t + d + angle * 0.1));
+      // Animate phase based on time and distance
+      vec3 col = a + b * cos(2.0 * PI * (c * t + d + dist * 0.5));
       
-      // Inject Gold/Orange at specific frequencies
-      float goldMask = smoothstep(0.4, 0.6, sin(t * 10.0 + angle));
-      return mix(col, vec3(1.0, 0.7, 0.1), goldMask * 0.3);
+      // Boost Cyans and Teals
+      col = mix(col, vec3(0.0, 0.8, 0.9), 0.2);
+      
+      return col;
     }
 
     float hash(vec2 p) {
@@ -68,21 +69,21 @@ const vertexShaderSource = `
       float a = 0.5;
       for (int i = 0; i < 6; i++) {
         v += a * noise(p);
-        p *= 2.0;
-        a *= 0.5;
+        p *= 2.1;
+        a *= 0.45;
       }
       return v;
     }
 
-    // Domain warping for liquid motion
+    // Domain warping for fluid motion
     float pattern_noise(vec2 p, float t, out vec2 q, out vec2 r) {
-      q = vec2(fbm(p + vec2(0.0, 0.0) + t),
-               fbm(p + vec2(5.2, 1.3) + t));
+      q = vec2(fbm(p + vec2(0.0, 0.0) + t * 0.1),
+               fbm(p + vec2(5.2, 1.3) + t * 0.15));
 
-      r = vec2(fbm(p + 4.0 * q + vec2(1.7, 9.2) + t * 0.5),
-               fbm(p + 4.0 * q + vec2(8.3, 2.8) + t * 0.3));
+      r = vec2(fbm(p + 4.0 * q + vec2(1.7, 9.2) + t * 0.05),
+               fbm(p + 4.0 * q + vec2(8.3, 2.8) + t * 0.07));
 
-      return fbm(p + 4.0 * r + t * 0.2);
+      return fbm(p + 4.0 * r + t * 0.02);
     }
 
     void main() {
@@ -96,59 +97,68 @@ const vertexShaderSource = `
       float a = mod(angle, slice) - slice * 0.5;
       a = abs(a); // Kaleidoscope mirror
       
-      // Warped space for liquid feel
+      // Warped space
       vec2 p = vec2(cos(a), sin(a)) * dist;
       vec2 q, r_noise;
-      float t = u_time * (0.05 + u_velocity * 0.1);
+      float t = u_time * (0.02 + u_velocity * 0.05);
       
-      float noise_val = pattern_noise(p * 4.0, t, q, r_noise);
+      float noise_val = pattern_noise(p * 3.0, t, q, r_noise);
       
-      // CYMATIC INTERFERENCE PATTERN
-      // Base frequency density from seed and pressure
-      float freq = 15.0 + u_seed * 10.0 + u_pressure * 5.0;
-      float wave = sin(dist * freq - u_time * 2.0 + noise_val * 3.0);
+      // CYMATIC INTERFERENCE
+      // Higher pressure = tighter waves, Higher clarity = sharper lines
+      float freq = 12.0 + u_seed * 8.0 + u_pressure * 14.0;
+      float wave = sin(dist * freq - u_time * 1.8 + noise_val * 4.5);
       
-      // Lobes / Petals
-      float lobes = cos(a * symmetry * 1.5 + noise_val * 2.0);
+      // 8-fold interference lobes
+      float lobes = cos(a * symmetry * 1.0 + noise_val * 1.8);
       float interference = wave * lobes;
       
-      // Sharpen to extract "nodal lines"
-      float sharpness = 4.0 + (u_clarity * 6.0);
-      float nodal = pow(1.0 - abs(interference), sharpness);
+      // Sharpness extracted from clarity
+      float sharpness = 4.0 + (u_clarity * 12.0);
+      float nodal = pow(max(0.0, 1.0 - abs(interference)), sharpness);
       
-      // COLOR COMPOSITION (Gasoline on Concrete)
-      // Background: Concrete-like texture
-      float concrete = fbm(uv * 100.0) * 0.05;
-      vec3 color = vec3(0.02 + concrete); // Dark concrete base
+      // COLOR: Gasoline on Concrete
+      // Base: Concrete/Asphalt texture - refined
+      float concrete = fbm(uv * 180.0) * 0.05 + fbm(uv * 300.0) * 0.02;
+      vec3 color = vec3(0.02 + concrete); // Darker textured gray
       
-      // Oily iridescence based on warped noise and nodal pattern
-      vec3 irid = getIridescence(noise_val + dist, angle);
+      // Iridescent fluid
+      vec3 irid = getIridescence(noise_val * 0.6 + wave * 0.25, dist);
       
-      // Highlight the nodal lines (Electric Cyan effect)
-      vec3 electricCyan = vec3(0.0, 0.9, 1.0);
-      color = mix(color, irid * 0.8, smoothstep(0.1, 0.6, nodal));
-      color += electricCyan * pow(nodal, 12.0) * 1.5; // Core glow
+      // Highlight nodal lines: Electric Cyan
+      vec3 electricCyan = vec3(0.0, 0.95, 1.0);
+      vec3 deepTeal = vec3(0.0, 0.15, 0.2);
       
-      // Add "Gasoline hotspots" (Gold/Orange)
-      float hotspot = smoothstep(0.8, 1.0, noise_val * interference);
-      color += vec3(1.0, 0.5, 0.0) * hotspot * u_pressure;
+      // Mix iridescence based on interference - more fluid
+      float iridMask = smoothstep(0.15, 0.85, nodal + noise_val * 0.4);
+      color = mix(color, irid * 0.8, iridMask);
       
-      // Central "Source" glow
-      float center = 1.0 / (dist * 20.0 + 0.1);
-      color += electricCyan * center * 0.5;
+      // Interior of patterns: Deep Teal
+      color = mix(color, deepTeal, (1.0 - nodal) * 0.2 * u_coherence);
       
-      // Coherence - controls the "clarity" of the structure vs the liquid chaos
-      color = mix(vec3(dot(color, vec3(0.299, 0.587, 0.114))), color, 0.5 + u_coherence * 0.5);
+      // Core glow of nodal lines - sharper and more electric
+      color += electricCyan * pow(nodal, 10.0) * (1.5 + u_clarity * 0.5);
+      
+      // Gasoline Hotspots: Amber/Gold - reduced and subtle
+      float goldMask = smoothstep(0.8, 0.98, noise_val * wave * (1.0 + u_pressure * 0.5));
+      color += vec3(1.0, 0.55, 0.05) * goldMask * u_pressure * 0.6;
+      
+      // Central Source Glow
+      float center = 0.008 / (dist + 0.008);
+      color += electricCyan * center * 0.3;
+      
+      // Global Coherence: Mix between monochrome and vibrant
+      float gray = dot(color, vec3(0.299, 0.587, 0.114));
+      color = mix(vec3(gray), color, 0.35 + u_coherence * 0.65);
 
       // Vignette
-      color *= smoothstep(1.3, 0.4, dist);
+      color *= smoothstep(1.6, 0.2, dist);
       
-      // Final polish: smooth clipping
-      color = smoothstep(0.0, 1.0, color);
-
+      // Final clip/polish
+      color = clamp(color, 0.0, 1.0);
       gl_FragColor = vec4(color, 1.0);
     }
-  `
+  
 
 function createShader(gl: WebGLRenderingContext, type: number, source: string): WebGLShader | null {
   const shader = gl.createShader(type)
@@ -334,7 +344,7 @@ export function MandalaCanvas({ state, seed = 0.5, size, className = "", reduced
   return (
     <canvas
       ref={canvasRef}
-      className={`block w-full h-full ${className}`}
+      className={`block w-full h - full ${ className } `}
       style={{ touchAction: "none", width: size, height: size }}
       aria-label="Cymatic mandala visualization reflecting your current state"
       role="img"

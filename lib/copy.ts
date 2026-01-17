@@ -3,10 +3,10 @@
 
 export const oldWiseTales = {
   hero: {
-    headline: "The Choreography of the Soul.",
-    subhead: "Your problems are not evil villains. They are your dance partners. They are waiting for you to take their hand and spin the chaos into kinetic energy. Don't overthink it. Get on the floor. Lean into the spin.",
+    headline: "The Resonance of Being.",
+    subhead: "Surface the recurring patterns in your timing, energy, and relationships. Not to predict the future, but to master the present. Move from reactive chaos to rhythmic alignment.",
     hook: "DEFRAG",
-    cta: "Begin calibration",
+    cta: "Start Calibration",
   },
 
   wisdomFragments: {

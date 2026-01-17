@@ -23,12 +23,8 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden min-h-[90vh] flex items-center">
-      {/* Background mandala - larger, more prominent */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.06]">
-        <div className="h-[1000px] w-[1000px] md:h-[1200px] md:w-[1200px]">
-          <Mandala state={demoState} size="full" seed={0.42} />
-        </div>
-      </div>
+      {/* Background radial gradient for depth */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,180,216,0.03)_0%,transparent_70%)]" />
 
       {/* Subtle grid overlay */}
       <div
@@ -46,49 +42,21 @@ export function Hero() {
             <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground mb-6">{hero.hook}</p>
           </FadeUp>
 
-          {/* Main headline - BOLD & PROVOCATIVE - Normalized sizing */}
-          {/* Main headline - BOLD & PROVOCATIVE - Mobile Optimized */}
+          {/* Main headline - Centered & Premium */}
           <FadeUp delay={150}>
-            <h1 className="max-w-4xl text-balance text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              <span className="italic font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl block md:inline">The Choreography</span>{" "}
-              <span className="font-black tracking-tighter block md:inline">of the Soul.</span>
+            <h1 className="max-w-4xl text-balance text-4xl font-bold tracking-tight sm:text-5xl md:text-7xl lg:text-8xl">
+              <span className="text-foreground">The Resonance</span>{" "}
+              <span className="text-muted-foreground/40 font-light italic serif">of Being.</span>
             </h1>
           </FadeUp>
 
-          {/* Subhead - Optimized for minimal overflow */}
+          {/* Subhead - Clean & Sophisticated */}
           <FadeUp delay={300}>
-            <div className="mt-8 max-w-2xl space-y-4 text-base md:text-lg font-medium px-2 md:px-0">
-              <p className="leading-tight text-lg md:text-xl">
-                <span className="text-foreground font-bold italic">
-                  Your problems are not evil villains.
-                </span>
-              </p>
-
-              <div className="space-y-2 md:space-y-3">
-                <p className="leading-tight text-muted-foreground">
-                  They are your <em>dance partners</em>.
-                </p>
-
-                <p className="leading-tight text-muted-foreground">
-                  They are <strong>waiting</strong> for you to take their hand
-                </p>
-
-                <p className="leading-tight text-muted-foreground">
-                  <span className="text-foreground font-bold">&amp; spin the chaos into kinetic energy.</span>
-                </p>
-              </div>
-
-              <div className="pt-4 space-y-1">
-                <p className="text-xs md:text-sm uppercase tracking-widest opacity-70 font-normal">
-                  Don't overthink it.
-                </p>
-                <p className="text-xs md:text-sm uppercase tracking-widest opacity-70 font-normal">
-                  Get on the floor.
-                </p>
-              </div>
-
-              <p className="pt-2 text-base md:text-lg uppercase tracking-wider">
-                <strong className="text-foreground font-black">Lean into the spin.</strong>
+            <div className="mt-8 max-w-2xl text-base md:text-xl text-muted-foreground leading-relaxed px-4">
+              <p>
+                Surface the recurring patterns in your timing, energy, and relationships.
+                Not to predict the future, but to <span className="text-foreground font-medium">master the present.</span>
+                Move from reactive chaos to rhythmic alignment.
               </p>
             </div>
           </FadeUp>
@@ -117,20 +85,20 @@ export function Hero() {
                 {/* Mandala Container - Scaled for Mobile */}
                 <div className="relative transform scale-90 md:scale-110">
                   {/* Outer glow ring - Gasoline colors */}
-                  <div className="absolute -inset-24 rounded-full bg-gradient-to-tr from-cyan-500/30 via-purple-500/20 to-orange-500/30 blur-[120px] opacity-80 animate-pulse-slow mix-blend-screen" />
+                  <div className="absolute -inset-32 rounded-full bg-gradient-to-tr from-cyan-500/20 via-purple-500/10 to-orange-500/20 blur-[120px] opacity-60 animate-pulse-slow mix-blend-screen" />
 
                   {/* Secondary chromatic glow */}
-                  <div className="absolute -inset-16 rounded-full bg-gradient-to-br from-blue-600/20 via-teal-500/10 to-pink-500/20 blur-[80px] opacity-50 z-0" />
+                  <div className="absolute -inset-24 rounded-full bg-gradient-to-br from-blue-600/10 via-teal-500/5 to-pink-500/10 blur-[80px] opacity-40 z-0" />
 
-                  {/* Internal concrete texture ring */}
-                  <div className="absolute -inset-2 rounded-full border border-white/10 bg-black/60 backdrop-blur-md shadow-2xl" />
+                  {/* Internal concrete texture ring - centered better */}
+                  <div className="absolute -inset-4 rounded-full border border-white/5 bg-black/40 backdrop-blur-xl shadow-[0_0_80px_rgba(0,0,0,0.5)]" />
 
                   {/* Breathing animation wrapper */}
                   <div
-                    className="relative transition-all duration-[6000ms] ease-in-out"
+                    className="relative transition-all duration-[8000ms] ease-in-out"
                     style={{
-                      animation: mounted ? "breathe 12s ease-in-out infinite" : "none",
-                      filter: "drop-shadow(0 0 30px rgba(0, 255, 255, 0.2))"
+                      animation: mounted ? "breathe 16s ease-in-out infinite" : "none",
+                      filter: "drop-shadow(0 0 40px rgba(0, 255, 255, 0.15))"
                     }}
                   >
                     <Mandala
@@ -167,7 +135,7 @@ export function Hero() {
 
           {/* Trust line */}
           <FadeUp delay={750}>
-            <p className="mt-16 text-xs text-muted-foreground/50 max-w-md">
+            <p className="mt-20 text-[10px] uppercase tracking-[0.3em] text-muted-foreground/40 max-w-md">
               Not predictive. Not diagnostic. Not a substitute for professional care.
             </p>
           </FadeUp>
