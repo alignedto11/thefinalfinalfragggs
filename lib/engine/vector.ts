@@ -23,48 +23,97 @@ const CHANNELS: [number, number][] = [
     [39, 55], [42, 53], [47, 64]
 ];
 
+// Elemental Mappings for Gates
+const ELEMENTAL_GATES = {
+    FIRE: [1, 14, 25, 51, 21, 51, 26, 40, 36, 22, 37, 6, 49, 55, 30],
+    WATER: [48, 57, 44, 50, 32, 28, 18, 34, 5, 14, 29, 59, 9, 3, 42, 27],
+    AIR: [64, 61, 63, 47, 24, 4, 17, 43, 11, 62, 23, 56, 12, 45, 35, 16, 20, 31, 8, 33],
+    EARTH: [58, 38, 54, 53, 60, 52, 19, 39, 41, 1, 13, 25, 46, 2, 15, 10, 7]
+};
+
 export function computeMandalaState(positions: PlanetaryPosition[]): MandalaState {
     const activeGates = new Set(positions.map(p => p.gate));
 
-    // 1. Pressure: Activation of Head and Root Gates
+    // 1. Core State Vectors
     const headCount = GATES_BY_CENTER.HEAD.filter(g => activeGates.has(g)).length;
     const rootCount = GATES_BY_CENTER.ROOT.filter(g => activeGates.has(g)).length;
-    // Normalize: Head max 3, Root max 9. Typical transit has ~10 planets.
-    // Weighted Pressure.
-    const pressureRaw = (headCount * 1.5 + rootCount * 0.8) / 5;
-    const pressure = Math.min(1.0, Math.max(0.0, pressureRaw));
+    const pressure = Math.min(1.0, (headCount * 1.5 + rootCount * 0.8) / 5);
 
-    // 2. Clarity: Activation of Awareness Centers (Ajna, Spleen, Solar Plexus - emotional clarity?)
-    // Let's use Ajna + Spleen for "Mental/Physical Clarity".
     const ajnaCount = GATES_BY_CENTER.AJNA.filter(g => activeGates.has(g)).length;
     const spleenCount = GATES_BY_CENTER.SPLEEN.filter(g => activeGates.has(g)).length;
-    const clarityRaw = (ajnaCount + spleenCount) / 5;
-    const clarity = Math.min(1.0, Math.max(0.0, clarityRaw));
+    const clarity = Math.min(1.0, (ajnaCount + spleenCount) / 5);
 
-    // 3. Velocity: Activation of Motor Centers (Root, Sacral, Solar Plexus, Heart)
-    // Roots are already Pressure, but also Motors.
     const sacralCount = GATES_BY_CENTER.SACRAL.filter(g => activeGates.has(g)).length;
     const solarCount = GATES_BY_CENTER.SOLAR_PLEXUS.filter(g => activeGates.has(g)).length;
     const heartCount = GATES_BY_CENTER.HEART.filter(g => activeGates.has(g)).length;
-    const velocityRaw = (rootCount * 0.5 + sacralCount * 1.2 + solarCount * 0.8 + heartCount * 1.0) / 8;
-    const velocity = Math.min(1.0, Math.max(0.0, velocityRaw));
+    const velocity = Math.min(1.0, (rootCount * 0.5 + sacralCount * 1.2 + solarCount * 0.8 + heartCount * 1.0) / 8);
 
-    // 4. Coherence: Defined Channels
     let channelMatches = 0;
     for (const [a, b] of CHANNELS) {
-        if (activeGates.has(a) && activeGates.has(b)) {
-            channelMatches++;
-        }
+        if (activeGates.has(a) && activeGates.has(b)) channelMatches++;
     }
-    // Coherence boosts if channels are defined.
-    // Base coherence 0.3 + 0.15 per channel.
-    const coherenceRaw = 0.3 + (channelMatches * 0.2);
-    const coherence = Math.min(1.0, Math.max(0.0, coherenceRaw));
+    const coherence = Math.min(1.0, 0.3 + (channelMatches * 0.2));
+
+    // 2. Elemental Dominance (Deterministic)
+    const fireCount = ELEMENTAL_GATES.FIRE.filter(g => activeGates.has(g)).length;
+    const waterCount = ELEMENTAL_GATES.WATER.filter(g => activeGates.has(g)).length;
+    const airCount = ELEMENTAL_GATES.AIR.filter(g => activeGates.has(g)).length;
+    const earthCount = ELEMENTAL_GATES.EARTH.filter(g => activeGates.has(g)).length;
+
+    const maxElem = Math.max(fireCount, waterCount, airCount, earthCount);
+
+    // 3. Archetype & Shape Assignment
+    let archetypeId: 'A' | 'B' | 'C' | 'D' = 'A';
+    let shapeFamily: 'orb' | 'petal' | 'star' | 'lattice' | 'wave' = 'orb';
+    let symmetry = 8;
+    let colors = ["#00ffff", "#0088ff", "#ffffff"]; // Fallback
+
+    if (fireCount === maxElem) {
+        archetypeId = 'B';
+        shapeFamily = 'star';
+        symmetry = 10 + (fireCount % 5);
+        colors = ["#ff3300", "#ffcc00", "#ff00ff"]; // Fire palette
+    } else if (airCount === maxElem) {
+        archetypeId = 'C';
+        shapeFamily = 'lattice';
+        symmetry = 12 + (airCount % 6);
+        colors = ["#00ffff", "#ffff00", "#ffffff"]; // Air palette
+    } else if (waterCount === maxElem) {
+        archetypeId = 'A';
+        shapeFamily = 'petal';
+        symmetry = 8 + (waterCount % 4);
+        colors = ["#008080", "#40e0d0", "#fff5ee"]; // Water palette
+    } else {
+        archetypeId = 'A'; // Default to cellular earth
+        shapeFamily = 'orb';
+        symmetry = 6 + (earthCount % 4);
+        colors = ["#228b22", "#ffbf00", "#8b4513"]; // Earth palette
+    }
+
+    // Velocity Shift to Waveform
+    if (velocity > 0.75) {
+        shapeFamily = 'wave';
+        archetypeId = 'D';
+        colors = ["#ff00ff", "#ffff00", "#00ffff"]; // Neon oscillatory
+    }
+
+    // 4. Motion State
+    let motionState: 'calm' | 'focused' | 'activated' | 'transformative' = 'calm';
+    if (velocity > 0.7) motionState = 'activated';
+    else if (pressure > 0.7 && clarity > 0.7) motionState = 'focused';
+    else if (coherence < 0.4) motionState = 'transformative';
 
     return {
         pressure,
         clarity,
         velocity,
-        coherence
+        coherence,
+        archetypeId,
+        shapeFamily,
+        symmetry,
+        layers: 2 + Math.floor(coherence * 6),
+        colors,
+        motionState
     };
 }
+

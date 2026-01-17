@@ -24,29 +24,34 @@ export function NatalMandala({ birthData, size = "md", className = "" }: NatalMa
     const [isExpanded, setIsExpanded] = useState(false)
 
     // Compute the "Standard Shape" from birth data
-    // If no birth data, use a demo set
-    const baseline = useMemo(() => {
+    const state: MandalaState = useMemo(() => {
         if (!birthData) {
             return {
-                pressure0: 0.5,
-                clarity0: 0.7,
-                velocity0: 0.2, // Natal is slow/fixed
-                coherence0: 0.8,
-                longitudes: [] as number[],
-                giftRatio: 0.5
+                pressure: 0.5,
+                clarity: 0.7,
+                velocity: 0.1,
+                coherence: 0.8,
+                longitudes: [],
+                giftRatio: 0.5,
+                shapeFamily: 'orb',
+                symmetry: 8,
+                colors: ["#00ffff", "#0088ff", "#ffffff"]
             }
         }
-        return computeNatalBaseline(birthData)
-    }, [birthData])
 
-    const state: MandalaState = {
-        pressure: baseline.pressure0,
-        clarity: baseline.clarity0,
-        velocity: 0.1, // Fixed slow motion for the natal "fingerprint"
-        coherence: baseline.coherence0,
-        longitudes: baseline.longitudes,
-        giftRatio: baseline.giftRatio
-    }
+        const date = new Date(birthData.birthDate + "T" + (birthData.birthTime || "12:00"))
+        const { calculatePlanetaryPositions } = require("@/lib/engine/astronomy")
+        const { computeMandalaState } = require("@/lib/engine/vector")
+
+        const positions = calculatePlanetaryPositions(date)
+        const computedState = computeMandalaState(positions)
+
+        return {
+            ...computedState,
+            velocity: 0.05, // Natal is the "fixed" fingerprint
+            longitudes: positions.map((p: any) => p.longitude * (Math.PI / 180))
+        }
+    }, [birthData])
 
     // Generate a deterministic seed from the birth date
     const seed = useMemo(() => {

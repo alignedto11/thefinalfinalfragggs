@@ -18,7 +18,7 @@ export const RelationalGeometryLayer: React.FC<RelationalGeometryProps> = ({
     const radius = size * 0.42 // Stay slightly inside the mandala rim
 
     const aspects = useMemo(() => {
-        const lines: Array<{ x1: number; y1: number; x2: number; y2: number; type: string; opacity: number }> = []
+        const lines: Array<{ x1: number; y1: number; x2: number; y2: number; type: string; label: string; opacity: number }> = []
         const n = longitudes.length
 
         // Aspect definitions: [angle degrees, tolerance degrees, label, color]
@@ -97,9 +97,11 @@ export const RelationalGeometryLayer: React.FC<RelationalGeometryProps> = ({
                         x={(line.x1 + line.x2) / 2}
                         y={(line.y1 + line.y2) / 2}
                         fill={line.type}
-                        fontSize="4"
-                        fontFamily="monospace"
-                        className="uppercase tracking-[0.2em] font-bold"
+                        fontSize="6"
+                        fontWeight="bold"
+                        textAnchor="middle"
+                        dy="-4"
+                        className="uppercase tracking-[0.2em] pointer-events-none drop-shadow-sm select-none"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: line.opacity }}
                         transition={{ delay: 1.5 + i * 0.05 }}

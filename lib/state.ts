@@ -8,6 +8,14 @@ export interface MandalaState {
   coherence: number // 0-1
   longitudes?: number[] // For relational geometry
   giftRatio?: number // For vector scale (0 = shadow, 1 = gift)
+
+  // Deterministic Handoff Specs
+  shapeFamily?: 'orb' | 'petal' | 'star' | 'lattice' | 'wave'
+  symmetry?: number
+  layers?: number
+  colors?: string[]
+  motionState?: 'calm' | 'focused' | 'activated' | 'transformative'
+  archetypeId?: 'A' | 'B' | 'C' | 'D'
 }
 
 export interface MandalaUniforms {
@@ -107,4 +115,9 @@ export const demoState: MandalaState = {
   clarity: 0.62,
   velocity: 0.38,
   coherence: 0.71,
+  shapeFamily: 'orb',
+  symmetry: 8,
+  layers: 3,
+  colors: ["#00ffff", "#0088ff", "#ffffff"],
+  motionState: 'calm'
 }

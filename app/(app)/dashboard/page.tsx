@@ -14,6 +14,8 @@ import { calculatePlanetaryPositions } from "@/lib/engine/astronomy"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
+  if (!supabase) return <div>Auth required</div>
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
