@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { generateText } from "ai"
+import { google } from "@ai-sdk/google"
 import { NextResponse } from "next/server"
 import {
   detectDistress,
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
 
   try {
     const { text } = await generateText({
-      model: "anthropic/claude-sonnet-4-20250514",
+      model: google("gemini-1.5-pro"),
       system: `You are a structured self-reflection assistant for DEFRAG. You provide grounded, neutral observations—never predictions, diagnoses, or advice.
 
 Key principles:

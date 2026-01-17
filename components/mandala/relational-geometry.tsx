@@ -46,7 +46,7 @@ export const RelationalGeometryLayer: React.FC<RelationalGeometryProps> = ({
                         const x2 = center + radius * Math.cos(longitudes[j])
                         const y2 = center + radius * Math.sin(longitudes[j])
 
-                        lines.push({ x1, y1, x2, y2, type: type.color, opacity: intensity * 0.7 })
+                        lines.push({ x1, y1, x2, y2, type: type.color, label: type.label, opacity: intensity * 0.7 })
                     }
                 }
             }
@@ -78,18 +78,35 @@ export const RelationalGeometryLayer: React.FC<RelationalGeometryProps> = ({
 
             {/* Aspect lines */}
             {aspects.map((line, i) => (
-                <motion.line
-                    key={`aspect-${i}`}
-                    x1={line.x1}
-                    y1={line.y1}
-                    x2={line.x2}
-                    y2={line.y2}
-                    stroke={line.type}
-                    strokeWidth={0.5}
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: line.opacity }}
-                    transition={{ duration: 1.5, delay: 0.5 + i * 0.05 }}
-                />
+                <React.Fragment key={`aspect-group-${i}`}>
+                    <motion.line
+                        key={`aspect-${i}`}
+                        x1={line.x1}
+                        y1={line.y1}
+                        x2={line.x2}
+                        y2={line.y2}
+                        stroke={line.type}
+                        strokeWidth={0.5}
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: line.opacity }}
+                        transition={{ duration: 1.5, delay: 0.5 + i * 0.05 }}
+                    />
+
+                    {/* Small blueprint label midway */}
+                    <motion.text
+                        x={(line.x1 + line.x2) / 2}
+                        y={(line.y1 + line.y2) / 2}
+                        fill={line.type}
+                        fontSize="4"
+                        fontFamily="monospace"
+                        className="uppercase tracking-[0.2em] font-bold"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: line.opacity }}
+                        transition={{ delay: 1.5 + i * 0.05 }}
+                    >
+                        {line.label}
+                    </motion.text>
+                </React.Fragment>
             ))}
         </svg>
     )

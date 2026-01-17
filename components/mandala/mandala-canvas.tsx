@@ -344,7 +344,7 @@ export function MandalaCanvas({ state, seed = 0.5, size, className = "", reduced
   return (
     <canvas
       ref={canvasRef}
-      className={`block w-full h - full ${ className } `}
+      className={`block w-full h-full ${className}`}
       style={{ touchAction: "none", width: size, height: size }}
       aria-label="Cymatic mandala visualization reflecting your current state"
       role="img"

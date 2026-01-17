@@ -340,14 +340,25 @@ function CalibratingStep({ seed }: { seed: number }) {
   )
 }
 
+import { getWelcomeSnippet } from "@/app/actions/onboarding"
+
 // Complete step
 function CompleteStep({ seed, birthDate, onContinue }: { seed: number; birthDate: string; onContinue: () => void }) {
   const [showContent, setShowContent] = useState(false)
+  const [welcomeText, setWelcomeText] = useState("Baseline established. Your personal pattern is now ready for observation.")
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowContent(true), 500)
-    return () => clearTimeout(timer)
-  }, [])
+    const fetchWelcome = async () => {
+      try {
+        const text = await getWelcomeSnippet(birthDate)
+        setWelcomeText(text)
+      } catch (e) {
+        console.error("Failed to fetch welcome", e)
+      }
+      setShowContent(true)
+    }
+    fetchWelcome()
+  }, [birthDate])
 
   return (
     <motion.div
@@ -382,8 +393,8 @@ function CompleteStep({ seed, birthDate, onContinue }: { seed: number; birthDate
         className="mt-12 text-center"
       >
         <h1 className="text-2xl font-medium">Baseline established</h1>
-        <p className="mt-3 max-w-xs text-muted-foreground">
-          Your personal pattern is ready. Check in daily to observe how conditions shift.
+        <p className="mt-3 max-w-sm px-6 text-sm text-muted-foreground leading-relaxed italic border-x border-white/5">
+          {welcomeText}
         </p>
       </motion.div>
 
@@ -394,8 +405,8 @@ function CompleteStep({ seed, birthDate, onContinue }: { seed: number; birthDate
         transition={{ duration: 0.5, delay: 0.3 }}
         className="mt-12"
       >
-        <Button onClick={onContinue} size="lg">
-          View today's read
+        <Button onClick={onContinue} size="lg" className="rounded-full px-12">
+          Enter Dashboard
         </Button>
       </motion.div>
     </motion.div>

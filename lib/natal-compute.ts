@@ -1,6 +1,5 @@
-// Natal baseline computation (developer-only)
-// This module computes initial state from birth data
-// NEVER expose these equations or internals to end users
+import { calculatePlanetaryPositions } from "./engine/astronomy"
+
 
 export interface NatalInput {
   birthDate: string // YYYY-MM-DD
@@ -47,22 +46,11 @@ function wrapAngle(angle: number): number {
 // Compute planetary longitudes from birth data
 // In production, use Swiss Ephemeris or similar
 function computePlanetaryLongitudes(input: NatalInput): number[] {
-  // This is a placeholder - in production, use an ephemeris library
-  // For now, return mock data that varies by birth date
   const date = new Date(input.birthDate + "T" + (input.birthTime || "12:00"))
-  const dayOfYear = Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / 86400000)
+  const positions = calculatePlanetaryPositions(date)
 
-  // Generate deterministic but varied longitudes based on date
-  const seed = dayOfYear + date.getFullYear() * 365
-  const planets: number[] = []
-
-  for (let i = 0; i < 10; i++) {
-    // Generate pseudo-random longitude for each planet
-    const phase = ((seed * (i + 1) * 37) % 360) * (Math.PI / 180)
-    planets.push(phase)
-  }
-
-  return planets
+  // Convert degrees to radians for computeAspectEnergy
+  return positions.map(p => p.longitude * (Math.PI / 180))
 }
 
 // Compute aspect energy (tension vs harmony)
