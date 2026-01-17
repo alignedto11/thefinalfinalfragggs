@@ -111,98 +111,103 @@ const fragmentShaderSource = `
     vec2 uv = (gl_FragCoord.xy - 0.5 * u_res) / min(u_res.x, u_res.y);
     float r = length(uv);
     float angle = atan(uv.y, uv.x);
-
-    // State → visual controls with smoother mapping
-    float fHz = mix(0.08, 0.8, clamp(0.6 * u_velocity + 0.4 * u_pressure, 0.0, 1.0));
-    float rippleAmp = mix(0.005, 0.025, clamp(u_pressure, 0.0, 1.0));
-    float contrast = mix(0.2, 0.55, clamp(u_clarity, 0.0, 1.0));
-    float noiseAmt = mix(0.025, 0.08, clamp(1.0 - u_coherence, 0.0, 1.0));
-    float tight = mix(1.2, 2.4, clamp(u_pressure, 0.0, 1.0));
-
-    // Slow time - "water surface" feel with breathing
-    float breatheRate = mix(0.08, 0.15, u_velocity);
-    float breatheMod = breathe(u_time, breatheRate);
-    float t = u_time * (6.28318 * fHz) * 0.08;
     
-    vec2 p = uv;
-
-    // Water surface displacement (subtle, organic)
-    float waterDisp = waterSurface(p * 3.0 + u_seed, t * 0.5) * rippleAmp;
-    p += normalize(p + 1e-6) * waterDisp;
-
-    // Secondary organic displacement from fbm
-    float organicDisp = fbm(p * 2.5 + u_seed * 10.0 + t * 0.1) * rippleAmp * 0.5;
-    p += vec2(cos(angle), sin(angle)) * organicDisp;
-
-    // Cymatic interference in radial domain
-    // Cymatic interference (Chladni)
-    float k = mix(3.0, 12.0, tight); // Frequency
-    float w = cymatic(p * 2.0, k, t);
-
-    // VIBRANT MULTI-COLOR CYMATIC MANDALA
-    // Symmetry modes (6-fold or 8-fold like references)
-    float symmetry = 8.0;
-    float theta = mod(angle, 3.14159 * 2.0 / symmetry) * symmetry;
+    float t = u_time * 0.15;
     
-    // Multiple frequency layers for complexity
-    float freq1 = 3.0 + sin(t) * 0.5;
-    float freq2 = 5.0 + cos(t * 0.7) * 0.5;
-    float freq3 = 7.0 + sin(t * 0.5) * 0.5;
+    // REFERENCE-BASED CYMATIC PATTERN
+    // Deep teal/green centers, orange/yellow highlights, geometric pods
     
-    // Chladni patterns (nodal lines)
-    float pattern1 = abs(sin(freq1 * theta) * cos(freq1 * r * 6.0 * u_pressure));
-    float pattern2 = abs(cos(freq2 * theta) * sin(freq2 * r * 6.0 * u_coherence));
-    float pattern3 = abs(sin(freq3 * theta + t) * cos(freq3 * r * 4.0));
+    // 6-fold symmetry (matching reference image)
+    float symmetry = 6.0;
+    float symAngle = mod(angle + 3.14159, 3.14159 * 2.0 / symmetry) * symmetry;
     
-    // Combine patterns
-    float pattern = (pattern1 + pattern2 * 0.7 + pattern3 * 0.5) / 2.2;
+    // Multiple Chladni frequency layers
+    float freq1 = 4.0 + sin(t * 0.3) * 0.5;
+    float freq2 = 6.0 + cos(t * 0.4) * 0.5;
+    float freq3 = 3.0;
     
-    // Sharpen for defined edges
-    pattern = pow(pattern, 2.5);
-    pattern = smoothstep(0.2, 0.7, pattern);
+    // Chladni nodal patterns (where "sand" accumulates)
+    float chladni1 = sin(freq1 * symAngle) * cos(freq1 * r * 8.0 * u_pressure);
+    float chladni2 = cos(freq2 * symAngle) * sin(freq2 * r * 6.0 * u_coherence);
+    float chladni3 = sin(freq3 * symAngle + t) * cos(freq3 * r * 10.0);
     
-    // VIBRANT COLOR PALETTE (like Cadboy references)
-    // Create rainbow spectrum based on angle and radius
-    float hue = fract(theta / (3.14159 * 2.0) + r * 0.5 - t * 0.1);
+    // Combine for nodal lines
+    float nodes = abs(chladni1) * 0.5 + abs(chladni2) * 0.3 + abs(chladni3) * 0.2;
     
-    // Convert HSV to RGB for rich colors
-    vec3 hsv = vec3(hue, 0.85, 1.0); // High saturation
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p_hsv = abs(fract(hsv.xxx + K.xyz) * 6.0 - K.www);
-    vec3 baseColor = hsv.z * mix(K.xxx, clamp(p_hsv - K.xxx, 0.0, 1.0), hsv.y);
+    // Sharpen nodal lines significantly
+    nodes = pow(nodes, 3.0);
+    nodes = smoothstep(0.1, 0.6, nodes);
     
-    // Add secondary color layer for depth
-    float hue2 = fract(r * 1.5 - theta / (3.14159 * 2.0) + t * 0.05);
-    vec3 hsv2 = vec3(hue2, 0.75, 0.8);
-    vec3 p_hsv2 = abs(fract(hsv2.xxx + K.xyz) * 6.0 - K.www);
-    vec3 color2 = hsv2.z * mix(K.xxx, clamp(p_hsv2 - K.xxx, 0.0, 1.0), hsv2.y);
+    // GEOMETRIC PODS (circular structures in reference)
+    // Create repeating circular pods at specific radii
+    float podDist1 = abs(r - 0.35) * 12.0;
+    float podDist2 = abs(r - 0.55) * 10.0;
+    float podDist3 = abs(r - 0.75) * 8.0;
     
-    // Blend colors with pattern
-    vec3 finalColor = mix(color2, baseColor, pattern) * pattern * 5.0;
+    // Pods appear at symmetry points
+    float podAngle = mod(angle + 3.14159, 3.14159 * 2.0 / symmetry);
+    float podMask = smoothstep(0.5, 0.2, abs(podAngle - 3.14159 / symmetry));
     
-    // Add bright highlights on peaks
-    float highlight = pow(pattern, 8.0) * 3.0;
-    finalColor += vec3(1.0, 1.0, 0.9) * highlight;
+    float pods1 = exp(-podDist1 * podDist1) * podMask;
+    float pods2 = exp(-podDist2 * podDist2) * podMask;
+    float pods3 = exp(-podDist3 * podDist3) * podMask;
+    float pods = pods1 + pods2 * 0.7 + pods3 * 0.5;
     
-    // Glowing center
-    float centerGlow = exp(-r * r * 4.0) * 0.3;
-    finalColor += baseColor * centerGlow * 2.0;
+    // Combine nodes and pods
+    float pattern = nodes + pods * 2.0;
+    pattern = clamp(pattern, 0.0, 1.0);
     
-    // Outer edge glow (like references)
-    float edgeGlow = exp(-(1.0 - r) * (1.0 - r) * 20.0) * 0.4;
-    finalColor += baseColor * edgeGlow;
+    // REFERENCE COLORS: Teal/Green centers with Orange/Yellow highlights
+    // Base deep teal (dark water-like color)
+    vec3 baseTeal = vec3(0.05, 0.25, 0.30);
+    
+    // Mid teal/cyan
+    vec3 midTeal = vec3(0.15, 0.45, 0.50);
+    
+    // Bright cyan/blue
+    vec3 brightCyan = vec3(0.25, 0.65, 0.75);
+    
+    // Orange highlights (like in reference)
+    vec3 orange = vec3(0.85, 0.55, 0.25);
+    
+    // Yellow bright spots
+    vec3 yellow = vec3(0.95, 0.85, 0.50);
+    
+    // Color based on pattern intensity (teal -> orange transition)
+    vec3 color;
+    if (pattern < 0.3) {
+      color = mix(baseTeal, midTeal, pattern / 0.3);
+    } else if (pattern < 0.6) {
+      color = mix(midTeal, brightCyan, (pattern - 0.3) / 0.3);
+    } else if (pattern < 0.8) {
+      color = mix(brightCyan, orange, (pattern - 0.6) / 0.2);
+    } else {
+      color = mix(orange, yellow, (pattern - 0.8) / 0.2);
+    }
+    
+    // Add pods with orange/yellow highlights
+    color += pods * orange * 1.5;
+    
+    // Bright center glow (matching reference)
+    float centerGlow = exp(-r * r * 3.0) * 0.4;
+    color += yellow * centerGlow;
+    
+    // Outer edge glow (cyan/teal)
+    float edgeGlow = exp(-(1.0 - r) * (1.0 - r) * 15.0) * 0.3;
+    color += brightCyan * edgeGlow;
+    
+    // Flowing organic edges (like water movement in reference)
+    float edgeFlow = sin(angle * 6.0 + t * 2.0) * cos(r * 10.0) * 0.1;
+    color += vec3(edgeFlow * 0.2, edgeFlow * 0.3, edgeFlow * 0.35);
     
     // Vignette
-    finalColor *= smoothstep(1.05, 0.3, r);
+    color *= smoothstep(1.0, 0.2, r);
     
-    // Tone mapping for vibrant colors
-    finalColor = finalColor / (finalColor + vec3(0.3));
+    // Final brightness and saturation adjustment
+    color = color * 1.8;
+    color = color / (color + vec3(0.4)); // Tone mapping
     
-    // Boost saturation
-    float luma = dot(finalColor, vec3(0.299, 0.587, 0.114));
-    finalColor = mix(vec3(luma), finalColor, 1.3);
-    
-    gl_FragColor = vec4(finalColor, 1.0);
+    gl_FragColor = vec4(color, 1.0);
   }
 `
 
