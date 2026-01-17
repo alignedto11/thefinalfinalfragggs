@@ -8,6 +8,13 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient()
+
+    // Guard against missing env vars
+    if (!supabase) {
+      console.error("Supabase client failed to initialize in auth callback")
+      return NextResponse.redirect(`${origin}/auth/error?error=configuration_missing`)
+    }
+
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {

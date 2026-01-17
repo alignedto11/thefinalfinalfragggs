@@ -22,11 +22,14 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
     try {
+      // 1. Initialize client (will throw if env vars missing)
+      const supabase = createClient()
+
+      // 2. Attempt login
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -34,7 +37,8 @@ export default function LoginPage() {
       if (error) throw error
       router.push("/dashboard")
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred")
+      console.error("Login error:", error)
+      setError(error instanceof Error ? error.message : "An error occurred during login")
     } finally {
       setIsLoading(false)
     }

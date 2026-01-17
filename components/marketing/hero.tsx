@@ -47,73 +47,77 @@ export function Hero() {
           </FadeUp>
 
           {/* Main headline - BOLD & PROVOCATIVE - Normalized sizing */}
+          {/* Main headline - BOLD & PROVOCATIVE - Mobile Optimized */}
           <FadeUp delay={150}>
             <h1 className="max-w-4xl text-balance text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              <span className="italic font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl">The Choreography</span>{" "}
-              <span className="font-black tracking-tighter">of the Soul.</span>
+              <span className="italic font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl block md:inline">The Choreography</span>{" "}
+              <span className="font-black tracking-tighter block md:inline">of the Soul.</span>
             </h1>
           </FadeUp>
 
-          {/* Subhead - Normalized sizing for readability */}
+          {/* Subhead - Optimized for minimal overflow */}
           <FadeUp delay={300}>
-            <div className="mt-8 max-w-2xl space-y-3 text-base md:text-lg font-medium">
+            <div className="mt-8 max-w-2xl space-y-4 text-base md:text-lg font-medium px-2 md:px-0">
               <p className="leading-tight text-lg md:text-xl">
                 <span className="text-foreground font-bold italic">
                   Your problems are not evil villains.
                 </span>
               </p>
 
-              <p className="pl-4 md:pl-8 leading-tight text-muted-foreground">
-                They are your <em>dance partners</em>.
-              </p>
+              <div className="space-y-2 md:space-y-3">
+                <p className="leading-tight text-muted-foreground">
+                  They are your <em>dance partners</em>.
+                </p>
 
-              <p className="pl-4 md:pl-8 leading-tight text-muted-foreground">
-                They are <strong>waiting</strong> for you to take their hand
-              </p>
+                <p className="leading-tight text-muted-foreground">
+                  They are <strong>waiting</strong> for you to take their hand
+                </p>
 
-              <p className="pl-4 md:pl-8 leading-tight text-muted-foreground">
-                <span className="text-foreground font-bold">&amp; spin the chaos into kinetic energy.</span>
-              </p>
+                <p className="leading-tight text-muted-foreground">
+                  <span className="text-foreground font-bold">&amp; spin the chaos into kinetic energy.</span>
+                </p>
+              </div>
 
-              <p className="pl-4 md:pl-8 pt-2 text-sm uppercase tracking-widest opacity-70 font-normal">
-                Don't overthink it.
-              </p>
+              <div className="pt-4 space-y-1">
+                <p className="text-xs md:text-sm uppercase tracking-widest opacity-70 font-normal">
+                  Don't overthink it.
+                </p>
+                <p className="text-xs md:text-sm uppercase tracking-widest opacity-70 font-normal">
+                  Get on the floor.
+                </p>
+              </div>
 
-              <p className="pl-4 md:pl-8 text-sm uppercase tracking-widest opacity-70 font-normal">
-                Get on the floor.
-              </p>
-
-              <p className="pl-4 md:pl-8 text-base md:text-lg uppercase tracking-wider">
+              <p className="pt-2 text-base md:text-lg uppercase tracking-wider">
                 <strong className="text-foreground font-black">Lean into the spin.</strong>
               </p>
             </div>
           </FadeUp>
 
-          {/* CTA buttons */}
+          {/* CTA buttons - Stacked on mobile */}
           <FadeUp delay={450}>
-            <div className="mt-12 flex flex-col gap-4 sm:flex-row sm:gap-6">
-              <Button size="lg" asChild className="min-w-[180px] h-12 text-base">
+            <div className="mt-10 md:mt-12 flex flex-col gap-3 sm:flex-row sm:gap-6 w-full max-w-xs sm:max-w-none mx-auto">
+              <Button size="lg" asChild className="w-full sm:w-auto min-w-[160px] h-12 text-base">
                 <Link href="/auth/sign-up">{hero.cta}</Link>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 asChild
-                className="min-w-[180px] h-12 text-base bg-transparent border-border hover:bg-muted/50"
+                className="w-full sm:w-auto min-w-[160px] h-12 text-base bg-transparent border-border hover:bg-muted/50"
               >
                 <Link href="/how-it-works">How it works</Link>
               </Button>
             </div>
           </FadeUp>
 
-          {/* Mandala preview - FULLY CENTERED IN WINDOW */}
+          {/* Mandala preview - Responsive Container */}
           <FadeUp delay={600}>
-            <div className="mt-20 md:mt-24 w-full">
+            <div className="mt-16 md:mt-24 w-full">
               <div className="flex flex-col items-center justify-center">
-                {/* Mandala Container */}
-                <div className="relative">
+                {/* Mandala Container - Scaled for Mobile */}
+                <div className="relative transform scale-90 md:scale-100">
                   {/* Outer glow ring */}
-                  <div className="absolute -inset-8 rounded-full bg-gradient-to-b from-muted/40 via-transparent to-transparent blur-3xl" />
+                  <div className="absolute -inset-8 rounded-full bg-gradient-to-b from-muted/40 via-transparent to-transparent blur-3xl opacity-50 md:opacity-100" />
 
                   {/* Breathing animation wrapper */}
                   <div
@@ -133,7 +137,7 @@ export function Hero() {
                 </div>
 
                 {/* Caption - Below Mandala */}
-                <div className="mt-12 flex flex-col items-center gap-2 max-w-md mx-auto text-center">
+                <div className="mt-8 md:mt-12 flex flex-col items-center gap-2 max-w-[280px] md:max-w-md mx-auto text-center px-4">
                   <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                     <span className="text-foreground font-medium">Your personal resonance,</span> calibrated daily.
                   </p>
