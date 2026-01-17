@@ -1,4 +1,3 @@
-import { stripe } from "@/lib/stripe"
 import { createClient } from "@supabase/supabase-js"
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
@@ -39,6 +38,14 @@ export async function POST(request: Request) {
   try {
     switch (event.type) {
       case "checkout.session.completed": {
+        // Dynamically import stripe to avoid module loading errors
+        const { stripe } = await import("@/lib/stripe")
+
+        if (!stripe) {
+          console.warn("Stripe not configured, skipping checkout.session.completed")
+          break
+        }
+
         const session = event.data.object
         if (session.mode === "subscription") {
           const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
