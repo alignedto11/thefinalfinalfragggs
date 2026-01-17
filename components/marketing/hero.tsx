@@ -56,23 +56,26 @@ export function Hero() {
 
           {/* Subhead - Enhanced formatting for tone of voice */}
           <FadeUp delay={300}>
-            <div className="mt-8 max-w-2xl space-y-6 text-lg md:text-xl font-medium">
-              <p className="leading-relaxed text-xl md:text-2xl">
+            <div className="mt-8 max-w-2xl space-y-3 text-lg md:text-xl font-medium">
+              <p className="leading-tight text-xl md:text-2xl">
                 <span className="text-foreground font-bold italic">
                   Your problems are not evil villains.
                 </span>
               </p>
 
-              <p className="pl-6 md:pl-8 leading-relaxed text-muted-foreground">
+              <p className="pl-6 md:pl-8 leading-tight text-muted-foreground">
                 They are your <em>dance partners</em>.
               </p>
 
-              <p className="pl-6 md:pl-8 leading-relaxed text-muted-foreground">
-                They are <strong>waiting</strong> for you to take their hand and{" "}
-                <span className="text-foreground font-bold">spin the chaos into kinetic energy.</span>
+              <p className="pl-6 md:pl-8 leading-tight text-muted-foreground">
+                They are <strong>waiting</strong> for you to take their hand
               </p>
 
-              <p className="pl-6 md:pl-8 pt-4 text-base uppercase tracking-widest opacity-70 font-normal">
+              <p className="pl-6 md:pl-8 leading-tight text-muted-foreground">
+                <span className="text-foreground font-bold">&amp; spin the chaos into kinetic energy.</span>
+              </p>
+
+              <p className="pl-6 md:pl-8 pt-2 text-base uppercase tracking-widest opacity-70 font-normal">
                 Don't overthink it.
               </p>
 
