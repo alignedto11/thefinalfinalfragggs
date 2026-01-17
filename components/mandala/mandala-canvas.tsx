@@ -112,100 +112,93 @@ const fragmentShaderSource = `
     float r = length(uv);
     float angle = atan(uv.y, uv.x);
     
-    float t = u_time * 0.15;
+    float t = u_time * 0.12;
     
-    // REFERENCE-BASED CYMATIC PATTERN
-    // Deep teal/green centers, orange/yellow highlights, geometric pods
+    // REFERENCE MATCHING: 8-FOLD SYMMETRY
+    float symmetry = 8.0;
     
-    // 6-fold symmetry (matching reference image)
-    float symmetry = 6.0;
-    float symAngle = mod(angle + 3.14159, 3.14159 * 2.0 / symmetry) * symmetry;
+    // Fold space to create 8 segments
+    float segmentAngle = 3.14159 * 2.0 / symmetry;
+    float a = mod(angle, segmentAngle) - segmentAngle * 0.5;
+    vec2 p = vec2(cos(a), sin(a)) * r;
     
-    // Multiple Chladni frequency layers
-    float freq1 = 4.0 + sin(t * 0.3) * 0.5;
-    float freq2 = 6.0 + cos(t * 0.4) * 0.5;
-    float freq3 = 3.0;
+    // CYMATIC GRID PATTERN (Cellular/Chladni)
+    // We want sharp lines defining distinct pods
     
-    // Chladni nodal patterns (where "sand" accumulates)
-    float chladni1 = sin(freq1 * symAngle) * cos(freq1 * r * 8.0 * u_pressure);
-    float chladni2 = cos(freq2 * symAngle) * sin(freq2 * r * 6.0 * u_coherence);
-    float chladni3 = sin(freq3 * symAngle + t) * cos(freq3 * r * 10.0);
+    // Base frequencies for 8-fold resonance
+    float freq1 = 4.0; 
+    float freq2 = 8.0;
     
-    // Combine for nodal lines
-    float nodes = abs(chladni1) * 0.5 + abs(chladni2) * 0.3 + abs(chladni3) * 0.2;
+    // Domain warping for organic "fluid" feel within structure
+    vec2 warp = vec2(
+        sin(p.y * 10.0 + t),
+        cos(p.x * 10.0 - t)
+    ) * 0.05;
     
-    // Sharpen nodal lines significantly
-    nodes = pow(nodes, 3.0);
-    nodes = smoothstep(0.1, 0.6, nodes);
+    // Cellular Pattern Construction
+    // 1. Radial waves (concentric rings)
+    float radialWave = sin(r * 20.0 - t * 2.0);
     
-    // GEOMETRIC PODS (circular structures in reference)
-    // Create repeating circular pods at specific radii
-    float podDist1 = abs(r - 0.35) * 12.0;
-    float podDist2 = abs(r - 0.55) * 10.0;
-    float podDist3 = abs(r - 0.75) * 8.0;
+    // 2. Angular waves (petals)
+    float angularWave = cos(a * freq2); // 8-fold variation within segment
     
-    // Pods appear at symmetry points
-    float podAngle = mod(angle + 3.14159, 3.14159 * 2.0 / symmetry);
-    float podMask = smoothstep(0.5, 0.2, abs(podAngle - 3.14159 / symmetry));
+    // 3. Combine into interference pattern
+    float interference = sin(r * 15.0 - t) * cos(a * 12.0) + sin(r * 25.0 + t) * sin(a * 4.0);
     
-    float pods1 = exp(-podDist1 * podDist1) * podMask;
-    float pods2 = exp(-podDist2 * podDist2) * podMask;
-    float pods3 = exp(-podDist3 * podDist3) * podMask;
-    float pods = pods1 + pods2 * 0.7 + pods3 * 0.5;
+    // Create sharp "Cell Walls" (Cymatic Nodal Lines)
+    // The reference has bright lines separating dark cells
+    float cellStructure = abs(interference);
+    cellStructure = 1.0 - smoothstep(0.0, 0.15, cellStructure); // Invert: 1.0 = sharp line, 0.0 = cell interior
     
-    // Combine nodes and pods
-    float pattern = nodes + pods * 2.0;
-    pattern = clamp(pattern, 0.0, 1.0);
+    // SHARPEN LINES (Electric Cyan Borders)
+    float lines = pow(cellStructure, 8.0); // Very thin, sharp lines
     
-    // REFERENCE COLORS: Teal/Green centers with Orange/Yellow highlights
-    // Base deep teal (dark water-like color)
-    vec3 baseTeal = vec3(0.05, 0.25, 0.30);
+    // CELL INTERIORS (Deep Teal/Green)
+    // The space between lines
+    float interior = 1.0 - lines;
+    interior *= smoothstep(0.2, 0.8, sin(r * 10.0 + a * 4.0 + t)); // Variation inside cells
     
-    // Mid teal/cyan
-    vec3 midTeal = vec3(0.15, 0.45, 0.50);
+    // COLOR PALETTE (Strict adherence to reference)
+    // Background: Deep Black/Void
+    vec3 colBackground = vec3(0.0, 0.02, 0.05);
     
-    // Bright cyan/blue
-    vec3 brightCyan = vec3(0.25, 0.65, 0.75);
+    // Cell Centers: Deep Teal/Green
+    vec3 colTeal = vec3(0.0, 0.35, 0.4); 
+    vec3 colDarkTeal = vec3(0.0, 0.15, 0.2);
     
-    // Orange highlights (like in reference)
-    vec3 orange = vec3(0.85, 0.55, 0.25);
+    // Lines: Electric Cyan/Blue
+    vec3 colCyan = vec3(0.2, 0.8, 1.0);
     
-    // Yellow bright spots
-    vec3 yellow = vec3(0.95, 0.85, 0.50);
+    // Highlights: Gold/Orange (at intersections/peaks)
+    vec3 colGold = vec3(1.0, 0.7, 0.2);
+    vec3 colOrange = vec3(1.0, 0.4, 0.1);
     
-    // Color based on pattern intensity (teal -> orange transition)
-    vec3 color;
-    if (pattern < 0.3) {
-      color = mix(baseTeal, midTeal, pattern / 0.3);
-    } else if (pattern < 0.6) {
-      color = mix(midTeal, brightCyan, (pattern - 0.3) / 0.3);
-    } else if (pattern < 0.8) {
-      color = mix(brightCyan, orange, (pattern - 0.6) / 0.2);
-    } else {
-      color = mix(orange, yellow, (pattern - 0.8) / 0.2);
-    }
+    // COMPOSITING
+    vec3 color = colBackground;
     
-    // Add pods with orange/yellow highlights
-    color += pods * orange * 1.5;
+    // Add Teal interiors (soft glow inside cells)
+    float interiorGlow = sin(r * 12.0 - t * 0.5) * cos(a * 8.0);
+    interiorGlow = smoothstep(0.0, 1.0, interiorGlow);
+    color += mix(colDarkTeal, colTeal, interiorGlow) * interior * 0.8;
     
-    // Bright center glow (matching reference)
-    float centerGlow = exp(-r * r * 3.0) * 0.4;
-    color += yellow * centerGlow;
+    // Add Electric Cyan lines (sharp borders)
+    color += colCyan * lines * 1.5; // High intensity
     
-    // Outer edge glow (cyan/teal)
-    float edgeGlow = exp(-(1.0 - r) * (1.0 - r) * 15.0) * 0.3;
-    color += brightCyan * edgeGlow;
+    // Add Gold Highlights (at interaction points/nodes)
+    // Gold appears where interference is highest/lowest
+    float goldMask = smoothstep(0.8, 1.0, abs(sin(r * 20.0) * cos(a * 10.0)));
+    color += colGold * goldMask * interior * 1.2;
     
-    // Flowing organic edges (like water movement in reference)
-    float edgeFlow = sin(angle * 6.0 + t * 2.0) * cos(r * 10.0) * 0.1;
-    color += vec3(edgeFlow * 0.2, edgeFlow * 0.3, edgeFlow * 0.35);
+    // Central Star/Flower (8-pointed)
+    float centerStar = smoothstep(0.5, 0.0, abs(r - 0.15 - sin(a * 8.0) * 0.05));
+    color += mix(colOrange, colGold, centerStar) * centerStar * 2.0;
     
-    // Vignette
-    color *= smoothstep(1.0, 0.2, r);
+    // Vignette & Outer Fade
+    color *= smoothstep(0.9, 0.4, r);
     
-    // Final brightness and saturation adjustment
-    color = color * 1.8;
-    color = color / (color + vec3(0.4)); // Tone mapping
+    // Contrast & Saturation Boost
+    color = pow(color, vec3(1.2)); // increase contrast
+    color *= 1.4; // boost brightness
     
     gl_FragColor = vec4(color, 1.0);
   }
