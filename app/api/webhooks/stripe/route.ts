@@ -3,10 +3,20 @@ import { createClient } from "@supabase/supabase-js"
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 
-// Use service role for webhook handling
-const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+// Use service role for webhook handling (guard against missing env vars)
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+const supabaseAdmin = supabaseUrl && supabaseKey
+  ? createClient(supabaseUrl, supabaseKey)
+  : null
 
 export async function POST(request: Request) {
+  // Early return if Stripe/Supabase not configured
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: "Service not configured" }, { status: 503 })
+  }
+
   const body = await request.text()
   const headersList = await headers()
   const signature = headersList.get("stripe-signature")
