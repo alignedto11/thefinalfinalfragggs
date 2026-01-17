@@ -3,6 +3,7 @@ import { MarketingFooter } from "@/components/marketing/footer"
 import { HowSteps } from "@/components/marketing/how-steps"
 import { FadeUp } from "@/components/ui/motion"
 import { Mandala } from "@/components/mandala/mandala"
+import { NatalMandala } from "@/components/mandala/natal-mandala"
 import { demoState } from "@/lib/state"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -49,6 +50,35 @@ export default function HowItWorksPage() {
               <FadeUp delay={100}>
                 <div className="flex justify-center">
                   <Mandala state={demoState} size="lg" seed={0.42} />
+                </div>
+              </FadeUp>
+            </div>
+          </div>
+        </section>
+
+        {/* Natal Blueprint Section */}
+        <section className="border-t border-border">
+          <div className="mx-auto max-w-5xl px-4 py-20 md:py-24">
+            <div className="grid gap-12 md:grid-cols-2 md:items-center">
+              <FadeUp className="md:order-2">
+                <div>
+                  <h2 className="text-2xl font-medium tracking-tight italic font-serif">The Natal Blueprint</h2>
+                  <p className="mt-4 text-muted-foreground leading-relaxed">
+                    Upon sign-up, DEFRAG computes your <strong>Harmonic Fingerprint</strong> from your birth data.
+                    This "Standard Shape" represents your baseline resonance—the immutable geometry of your natal geometry.
+                  </p>
+                  <p className="mt-4 text-muted-foreground leading-relaxed">
+                    While the daily mandala ripples with the transit of time, the Blueprint remains a constant point of return,
+                    helping you identify which pressures are yours and which are merely passing through.
+                  </p>
+                </div>
+              </FadeUp>
+
+              <FadeUp delay={100} className="md:order-1">
+                <div className="flex justify-center relative">
+                  {/* Decorative background aura */}
+                  <div className="absolute inset-0 bg-blue-500/5 blur-[100px] rounded-full" />
+                  <NatalMandala size="lg" className="border border-white/5 shadow-2xl" />
                 </div>
               </FadeUp>
             </div>

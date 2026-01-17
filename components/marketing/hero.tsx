@@ -115,23 +115,29 @@ export function Hero() {
             <div className="mt-16 md:mt-24 w-full">
               <div className="flex flex-col items-center justify-center">
                 {/* Mandala Container - Scaled for Mobile */}
-                <div className="relative transform scale-90 md:scale-100">
-                  {/* Outer glow ring */}
-                  <div className="absolute -inset-8 rounded-full bg-gradient-to-b from-muted/40 via-transparent to-transparent blur-3xl opacity-50 md:opacity-100" />
+                <div className="relative transform scale-90 md:scale-110">
+                  {/* Outer glow ring - Gasoline colors */}
+                  <div className="absolute -inset-24 rounded-full bg-gradient-to-tr from-cyan-500/30 via-purple-500/20 to-orange-500/30 blur-[120px] opacity-80 animate-pulse-slow mix-blend-screen" />
+
+                  {/* Secondary chromatic glow */}
+                  <div className="absolute -inset-16 rounded-full bg-gradient-to-br from-blue-600/20 via-teal-500/10 to-pink-500/20 blur-[80px] opacity-50 z-0" />
+
+                  {/* Internal concrete texture ring */}
+                  <div className="absolute -inset-2 rounded-full border border-white/10 bg-black/60 backdrop-blur-md shadow-2xl" />
 
                   {/* Breathing animation wrapper */}
                   <div
-                    className={`relative transition-transform duration-[4000ms] ease-in-out ${mounted ? "animate-pulse-slow" : ""
-                      }`}
+                    className="relative transition-all duration-[6000ms] ease-in-out"
                     style={{
-                      animation: mounted ? "breathe 8s ease-in-out infinite" : "none",
+                      animation: mounted ? "breathe 12s ease-in-out infinite" : "none",
+                      filter: "drop-shadow(0 0 30px rgba(0, 255, 255, 0.2))"
                     }}
                   >
                     <Mandala
                       state={cosmic ? cosmic.mandala : demoState}
                       size="lg"
                       seed={cosmic ? cosmic.numerology.universalDayNumber * 0.1 : 0.42}
-                      className="relative"
+                      className="relative z-10"
                     />
                   </div>
                 </div>

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { MandalaCanvas } from "@/components/mandala/mandala-canvas"
+import { NatalMandala } from "@/components/mandala/natal-mandala"
 import { oldWiseTales } from "@/lib/copy"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
@@ -86,7 +87,7 @@ export function OnboardingFlow({ userId }: OnboardingFlowProps) {
 
         {step === "calibrating" && <CalibratingStep key="calibrating" seed={seed} />}
 
-        {step === "complete" && <CompleteStep key="complete" seed={seed} onContinue={handleComplete} />}
+        {step === "complete" && <CompleteStep key="complete" seed={seed} birthDate={birthDate} onContinue={handleComplete} />}
       </AnimatePresence>
     </div>
   )
@@ -340,7 +341,7 @@ function CalibratingStep({ seed }: { seed: number }) {
 }
 
 // Complete step
-function CompleteStep({ seed, onContinue }: { seed: number; onContinue: () => void }) {
+function CompleteStep({ seed, birthDate, onContinue }: { seed: number; birthDate: string; onContinue: () => void }) {
   const [showContent, setShowContent] = useState(false)
 
   useEffect(() => {
@@ -355,19 +356,21 @@ function CompleteStep({ seed, onContinue }: { seed: number; onContinue: () => vo
       exit={{ opacity: 0 }}
       className="flex h-full flex-col items-center justify-center px-4"
     >
-      {/* Stabilized mandala */}
+      {/* Stabilized mandala - showing the Natal Blueprint */}
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1 }}
         className="relative"
       >
-        <div className="absolute -inset-8 rounded-full bg-gradient-to-b from-muted/20 to-transparent blur-2xl" />
-        <MandalaCanvas
-          state={{ pressure: 0.35, clarity: 0.65, velocity: 0.3, coherence: 0.75 }}
-          seed={seed}
-          size={200}
-          className="relative"
+        <div className="absolute -inset-16 rounded-full bg-cyan-500/10 blur-[60px] animate-pulse-slow" />
+        <NatalMandala
+          birthData={{
+            birthDate,
+            birthLocation: { lat: 0, lon: 0, tz: 'UTC' }
+          }}
+          size="lg"
+          className="relative z-10 border border-white/10 shadow-2xl"
         />
       </motion.div>
 

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { Mandala } from "@/components/mandala/mandala"
+import { NatalMandala } from "@/components/mandala/natal-mandala"
 import { StateCard } from "@/components/app/state-card"
 import { WindowCard } from "@/components/app/window-card"
 import { BriefCard } from "@/components/app/brief-card"
@@ -14,7 +15,11 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const { data: profile } = await supabase.from("profiles").select("seed, tier").eq("id", user?.id).single()
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("seed, tier, birth_date, birth_lat, birth_lng")
+    .eq("id", user?.id)
+    .single()
 
   // Get latest state snapshot (or use demo state if none exists)
   const { data: latestState } = await supabase
@@ -27,14 +32,23 @@ export default async function DashboardPage() {
 
   const currentState = latestState
     ? {
-        pressure: latestState.pressure,
-        clarity: latestState.clarity,
-        velocity: latestState.velocity,
-        coherence: latestState.coherence,
-      }
+      pressure: latestState.pressure,
+      clarity: latestState.clarity,
+      velocity: latestState.velocity,
+      coherence: latestState.coherence,
+    }
     : demoState
 
   const seed = profile?.seed ?? 0.5
+
+  const birthData = profile?.birth_date ? {
+    birthDate: profile.birth_date.split('T')[0],
+    birthLocation: {
+      lat: profile.birth_lat || 0,
+      lon: profile.birth_lng || 0,
+      tz: 'UTC'
+    }
+  } : undefined
 
   // Format today's date
   const today = new Date()
@@ -83,11 +97,20 @@ export default async function DashboardPage() {
         <p className="mt-2 text-sm italic text-muted-foreground/80">{wisdom.text}</p>
       </div>
 
-      {/* Mandala */}
-      <div className="mb-8 flex justify-center">
-        <div className="relative">
-          <div className="absolute -inset-4 rounded-full bg-gradient-to-b from-muted/30 to-transparent blur-xl" />
-          <Mandala state={currentState} size="lg" seed={seed} className="relative" />
+      {/* Mandala Comparison */}
+      <div className="mb-12 flex flex-col items-center gap-8">
+        {/* Daily Reactive Mandala */}
+        <div className="relative group">
+          <p className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-widest text-muted-foreground opacity-50">Current State</p>
+          <div className="absolute -inset-4 rounded-full bg-cyan-500/10 blur-2xl transition-opacity group-hover:opacity-100 opacity-60" />
+          <Mandala state={currentState} size="lg" seed={seed} className="relative z-10 border border-white/5 shadow-2xl" />
+        </div>
+
+        {/* Natal Baseline Mandala - Smaller, labeled "Home" */}
+        <div className="relative group opacity-80 hover:opacity-100 transition-opacity">
+          <p className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-widest text-muted-foreground opacity-50">Home Frequency</p>
+          <div className="absolute -inset-2 rounded-full bg-blue-500/5 blur-xl group-hover:opacity-50 opacity-0" />
+          <NatalMandala birthData={birthData} size="sm" className="relative z-10 grayscale-[0.5] hover:grayscale-0 transition-all duration-700 border border-white/5" />
         </div>
       </div>
 
