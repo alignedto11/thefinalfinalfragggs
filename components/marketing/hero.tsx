@@ -46,44 +46,44 @@ export function Hero() {
             <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground mb-6">{hero.hook}</p>
           </FadeUp>
 
-          {/* Main headline - BOLD & PROVOCATIVE */}
+          {/* Main headline - BOLD & PROVOCATIVE - Normalized sizing */}
           <FadeUp delay={150}>
-            <h1 className="max-w-4xl text-balance text-5xl font-bold tracking-tight md:text-7xl lg:text-8xl">
-              <span className="italic font-serif text-6xl md:text-8xl lg:text-9xl">The Choreography</span>{" "}
+            <h1 className="max-w-4xl text-balance text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+              <span className="italic font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl">The Choreography</span>{" "}
               <span className="font-black tracking-tighter">of the Soul.</span>
             </h1>
           </FadeUp>
 
-          {/* Subhead - Enhanced formatting for tone of voice */}
+          {/* Subhead - Normalized sizing for readability */}
           <FadeUp delay={300}>
-            <div className="mt-8 max-w-2xl space-y-3 text-lg md:text-xl font-medium">
-              <p className="leading-tight text-xl md:text-2xl">
+            <div className="mt-8 max-w-2xl space-y-3 text-base md:text-lg font-medium">
+              <p className="leading-tight text-lg md:text-xl">
                 <span className="text-foreground font-bold italic">
                   Your problems are not evil villains.
                 </span>
               </p>
 
-              <p className="pl-6 md:pl-8 leading-tight text-muted-foreground">
+              <p className="pl-4 md:pl-8 leading-tight text-muted-foreground">
                 They are your <em>dance partners</em>.
               </p>
 
-              <p className="pl-6 md:pl-8 leading-tight text-muted-foreground">
+              <p className="pl-4 md:pl-8 leading-tight text-muted-foreground">
                 They are <strong>waiting</strong> for you to take their hand
               </p>
 
-              <p className="pl-6 md:pl-8 leading-tight text-muted-foreground">
+              <p className="pl-4 md:pl-8 leading-tight text-muted-foreground">
                 <span className="text-foreground font-bold">&amp; spin the chaos into kinetic energy.</span>
               </p>
 
-              <p className="pl-6 md:pl-8 pt-2 text-base uppercase tracking-widest opacity-70 font-normal">
+              <p className="pl-4 md:pl-8 pt-2 text-sm uppercase tracking-widest opacity-70 font-normal">
                 Don't overthink it.
               </p>
 
-              <p className="pl-6 md:pl-8 text-base uppercase tracking-widest opacity-70 font-normal">
+              <p className="pl-4 md:pl-8 text-sm uppercase tracking-widest opacity-70 font-normal">
                 Get on the floor.
               </p>
 
-              <p className="pl-6 md:pl-8 text-lg uppercase tracking-wider">
+              <p className="pl-4 md:pl-8 text-base md:text-lg uppercase tracking-wider">
                 <strong className="text-foreground font-black">Lean into the spin.</strong>
               </p>
             </div>
