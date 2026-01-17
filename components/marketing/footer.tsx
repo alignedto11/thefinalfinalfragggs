@@ -8,11 +8,22 @@ export function MarketingFooter() {
     <footer className="border-t border-border bg-muted/30">
       <div className="mx-auto max-w-5xl px-4 py-12">
         <div className="flex flex-col items-center gap-6 text-center">
-          {/* Logo */}
+          {/* Logo - Cymatic Mandala Style */}
           <div className="flex items-center gap-2">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L22 20H2L12 2Z" fill="currentColor" className="text-foreground" />
-              <path d="M12 8L18 18H6L12 8Z" fill="currentColor" className="text-background" opacity="0.4" />
+              {/* Outer ring */}
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="0.5" className="text-foreground" opacity="0.3" />
+              {/* Middle ring */}
+              <circle cx="12" cy="12" r="7" stroke="currentColor" strokeWidth="0.5" className="text-foreground" opacity="0.5" />
+              {/* Inner ring */}
+              <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="0.5" className="text-foreground" opacity="0.7" />
+              {/* Center dot */}
+              <circle cx="12" cy="12" r="1.5" fill="currentColor" className="text-foreground" />
+              {/* Radiating lines - cymatic pattern */}
+              <line x1="12" y1="2" x2="12" y2="22" stroke="currentColor" strokeWidth="0.3" className="text-foreground" opacity="0.4" />
+              <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" strokeWidth="0.3" className="text-foreground" opacity="0.4" />
+              <line x1="5" y1="5" x2="19" y2="19" stroke="currentColor" strokeWidth="0.3" className="text-foreground" opacity="0.3" />
+              <line x1="19" y1="5" x2="5" y2="19" stroke="currentColor" strokeWidth="0.3" className="text-foreground" opacity="0.3" />
             </svg>
             <span className="font-medium tracking-tight">DEFRAG</span>
           </div>

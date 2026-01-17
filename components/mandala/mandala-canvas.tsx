@@ -139,16 +139,25 @@ const fragmentShaderSource = `
     float k = mix(3.0, 12.0, tight); // Frequency
     float w = cymatic(p * 2.0, k, t);
 
-    // Chladni Sand/Nodes: Where vibration (w) is close to 0
-    float sandWidth = mix(0.02, 0.08, 1.0 - contrast);
-    float sand = smoothstep(sandWidth, 0.0, abs(w));
+    // Enhanced Chladni/Cymatic formula for SHARP nodal lines
+    // Using higher frequency modes for more detailed patterns
+    float m1 = 3.0 + sin(t * 0.1) * 1.5; // Primary mode (variable)
+    float n1 = 4.0 + cos(t * 0.15) * 1.5; // Secondary mode (variable)
+    float m2 = 5.0; // Tertiary mode
+    float n2 = 3.0; // Quaternary mode
     
-    // Complexify with secondary harmonic
-    float w2 = cymatic(p * 2.0, k * 1.5, t);
-    float sand2 = smoothstep(sandWidth * 0.7, 0.0, abs(w2));
+    // Primary Chladni pattern
+    float chladni1 = abs(sin(m1 * angle) * cos(n1 * r * 3.14159 * u_pressure));
     
-    // Combine
-    float pattern = sand + sand2 * 0.5;
+    // Secondary pattern for complexity
+    float chladni2 = abs(cos(m2 * angle) * sin(n2 * r * 3.14159 * u_coherence));
+    
+    // Combine patterns
+    float pattern = (chladni1 + chladni2) * 0.5;
+    
+    // SHARPEN - make nodal lines much more defined
+    pattern = pow(pattern, 3.0); // Sharpen significantly
+    pattern = smoothstep(0.1, 0.5, pattern); // Increase contrast
     
     // Rings are less relevant for Chladni, but we keep a subtle boundary
     float rings = smoothstep(0.95, 0.8, r); // Fade edges

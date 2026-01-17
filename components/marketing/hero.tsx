@@ -46,42 +46,42 @@ export function Hero() {
             <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground mb-6">{hero.hook}</p>
           </FadeUp>
 
-          {/* Main headline */}
+          {/* Main headline - BOLD & PROVOCATIVE */}
           <FadeUp delay={150}>
-            <h1 className="max-w-4xl text-balance text-5xl font-light tracking-tight md:text-7xl lg:text-8xl">
-              <span className="italic font-serif">The Choreography</span>{" "}
-              <span className="font-bold tracking-tighter">of the Soul.</span>
+            <h1 className="max-w-4xl text-balance text-5xl font-bold tracking-tight md:text-7xl lg:text-8xl">
+              <span className="italic font-serif text-6xl md:text-8xl lg:text-9xl">The Choreography</span>{" "}
+              <span className="font-black tracking-tighter">of the Soul.</span>
             </h1>
           </FadeUp>
 
-          {/* Subhead - Formatted for maximum impact */}
+          {/* Subhead - Enhanced formatting for tone of voice */}
           <FadeUp delay={300}>
-            <div className="mt-8 max-w-2xl space-y-6 text-lg md:text-xl">
-              <p className="leading-relaxed">
-                <span className="text-foreground font-medium italic">
+            <div className="mt-8 max-w-2xl space-y-6 text-lg md:text-xl font-medium">
+              <p className="leading-relaxed text-xl md:text-2xl">
+                <span className="text-foreground font-bold italic">
                   Your problems are not evil villains.
                 </span>
               </p>
 
               <p className="pl-6 md:pl-8 leading-relaxed text-muted-foreground">
-                They are your dance partners.
+                They are your <em>dance partners</em>.
               </p>
 
               <p className="pl-6 md:pl-8 leading-relaxed text-muted-foreground">
-                They are waiting for you to take their hand and{" "}
-                <span className="text-foreground/90">spin the chaos into kinetic energy.</span>
+                They are <strong>waiting</strong> for you to take their hand and{" "}
+                <span className="text-foreground font-bold">spin the chaos into kinetic energy.</span>
               </p>
 
-              <p className="pl-6 md:pl-8 pt-2 text-sm uppercase tracking-widest opacity-60">
+              <p className="pl-6 md:pl-8 pt-4 text-base uppercase tracking-widest opacity-70 font-normal">
                 Don't overthink it.
               </p>
 
-              <p className="pl-6 md:pl-8 text-sm uppercase tracking-widest opacity-60">
+              <p className="pl-6 md:pl-8 text-base uppercase tracking-widest opacity-70 font-normal">
                 Get on the floor.
               </p>
 
-              <p className="pl-6 md:pl-8 text-sm uppercase tracking-widest">
-                <strong className="text-foreground">Lean into the spin.</strong>
+              <p className="pl-6 md:pl-8 text-lg uppercase tracking-wider">
+                <strong className="text-foreground font-black">Lean into the spin.</strong>
               </p>
             </div>
           </FadeUp>
@@ -103,35 +103,38 @@ export function Hero() {
             </div>
           </FadeUp>
 
-          {/* Mandala preview with breathing animation - CENTERED */}
+          {/* Mandala preview - FULLY CENTERED IN WINDOW */}
           <FadeUp delay={600}>
-            <div className="mt-20 md:mt-24 flex justify-center items-center">
-              <div className="relative flex justify-center items-center">
-                {/* Outer glow ring */}
-                <div className="absolute -inset-8 rounded-full bg-gradient-to-b from-muted/40 via-transparent to-transparent blur-3xl" />
+            <div className="mt-20 md:mt-24 w-full">
+              <div className="flex flex-col items-center justify-center">
+                {/* Mandala Container */}
+                <div className="relative">
+                  {/* Outer glow ring */}
+                  <div className="absolute -inset-8 rounded-full bg-gradient-to-b from-muted/40 via-transparent to-transparent blur-3xl" />
 
-                {/* Breathing animation wrapper */}
-                <div
-                  className={`relative transition-transform duration-[4000ms] ease-in-out ${mounted ? "animate-pulse-slow" : ""
-                    }`}
-                  style={{
-                    animation: mounted ? "breathe 8s ease-in-out infinite" : "none",
-                  }}
-                >
-                  <Mandala
-                    state={cosmic ? cosmic.mandala : demoState}
-                    size="lg"
-                    seed={cosmic ? cosmic.numerology.universalDayNumber * 0.1 : 0.42}
-                    className="relative mx-auto"
-                  />
+                  {/* Breathing animation wrapper */}
+                  <div
+                    className={`relative transition-transform duration-[4000ms] ease-in-out ${mounted ? "animate-pulse-slow" : ""
+                      }`}
+                    style={{
+                      animation: mounted ? "breathe 8s ease-in-out infinite" : "none",
+                    }}
+                  >
+                    <Mandala
+                      state={cosmic ? cosmic.mandala : demoState}
+                      size="lg"
+                      seed={cosmic ? cosmic.numerology.universalDayNumber * 0.1 : 0.42}
+                      className="relative"
+                    />
+                  </div>
                 </div>
 
-                {/* Caption - Value Proposition */}
-                <div className="mt-8 flex flex-col items-center gap-2 max-w-md mx-auto">
-                  <p className="text-center text-sm md:text-base text-muted-foreground leading-relaxed">
+                {/* Caption - Below Mandala */}
+                <div className="mt-12 flex flex-col items-center gap-2 max-w-md mx-auto text-center">
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                     <span className="text-foreground font-medium">Your personal resonance,</span> calibrated daily.
                   </p>
-                  <p className="text-center text-xs text-muted-foreground/70">
+                  <p className="text-xs text-muted-foreground/70">
                     Align your energy with cosmic timing — see your patterns, not your predictions.
                   </p>
                   {sunInfo && sunInfo.info && (
