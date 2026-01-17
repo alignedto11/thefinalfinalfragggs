@@ -139,109 +139,68 @@ const fragmentShaderSource = `
     float k = mix(3.0, 12.0, tight); // Frequency
     float w = cymatic(p * 2.0, k, t);
 
-    // Enhanced Chladni/Cymatic formula for SHARP nodal lines
-    // Using higher frequency modes for more detailed patterns
-    float m1 = 3.0 + sin(t * 0.1) * 1.5; // Primary mode (variable)
-    float n1 = 4.0 + cos(t * 0.15) * 1.5; // Secondary mode (variable)
-    float m2 = 5.0; // Tertiary mode
-    float n2 = 3.0; // Quaternary mode
+    // VIBRANT MULTI-COLOR CYMATIC MANDALA
+    // Symmetry modes (6-fold or 8-fold like references)
+    float symmetry = 8.0;
+    float theta = mod(angle, 3.14159 * 2.0 / symmetry) * symmetry;
     
-    // Primary Chladni pattern
-    float chladni1 = abs(sin(m1 * angle) * cos(n1 * r * 3.14159 * u_pressure));
+    // Multiple frequency layers for complexity
+    float freq1 = 3.0 + sin(t) * 0.5;
+    float freq2 = 5.0 + cos(t * 0.7) * 0.5;
+    float freq3 = 7.0 + sin(t * 0.5) * 0.5;
     
-    // Secondary pattern for complexity
-    float chladni2 = abs(cos(m2 * angle) * sin(n2 * r * 3.14159 * u_coherence));
+    // Chladni patterns (nodal lines)
+    float pattern1 = abs(sin(freq1 * theta) * cos(freq1 * r * 6.0 * u_pressure));
+    float pattern2 = abs(cos(freq2 * theta) * sin(freq2 * r * 6.0 * u_coherence));
+    float pattern3 = abs(sin(freq3 * theta + t) * cos(freq3 * r * 4.0));
     
     // Combine patterns
-    float pattern = (chladni1 + chladni2) * 0.5;
+    float pattern = (pattern1 + pattern2 * 0.7 + pattern3 * 0.5) / 2.2;
     
-    // SHARPEN - make nodal lines much more defined
-    pattern = pow(pattern, 3.0); // Sharpen significantly
-    pattern = smoothstep(0.1, 0.5, pattern); // Increase contrast
+    // Sharpen for defined edges
+    pattern = pow(pattern, 2.5);
+    pattern = smoothstep(0.2, 0.7, pattern);
     
-    // Rings are less relevant for Chladni, but we keep a subtle boundary
-    float rings = smoothstep(0.95, 0.8, r); // Fade edges
+    // VIBRANT COLOR PALETTE (like Cadboy references)
+    // Create rainbow spectrum based on angle and radius
+    float hue = fract(theta / (3.14159 * 2.0) + r * 0.5 - t * 0.1);
     
-    float lines = pattern * contrast; // Apply clarity contrast
-
-    // --- ENHANCED FLOWING MOTION ---
-    // Add realistic water undulation
-    float flowSpeed = 0.12;
-    float flowTime = t * flowSpeed;
+    // Convert HSV to RGB for rich colors
+    vec3 hsv = vec3(hue, 0.85, 1.0); // High saturation
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p_hsv = abs(fract(hsv.xxx + K.xyz) * 6.0 - K.www);
+    vec3 baseColor = hsv.z * mix(K.xxx, clamp(p_hsv - K.xxx, 0.0, 1.0), hsv.y);
     
-    // Multi-layered flow for organic feel
-    vec2 flow1 = vec2(sin(flowTime + angle * 2.0) * 0.015, cos(flowTime + angle * 2.0) * 0.015);
-    vec2 flow2 = vec2(cos(flowTime * 0.7 + angle) * 0.01, sin(flowTime * 0.7 - angle) * 0.01);
-    p += flow1 + flow2;
+    // Add secondary color layer for depth
+    float hue2 = fract(r * 1.5 - theta / (3.14159 * 2.0) + t * 0.05);
+    vec3 hsv2 = vec3(hue2, 0.75, 0.8);
+    vec3 p_hsv2 = abs(fract(hsv2.xxx + K.xyz) * 6.0 - K.www);
+    vec3 color2 = hsv2.z * mix(K.xxx, clamp(p_hsv2 - K.xxx, 0.0, 1.0), hsv2.y);
     
-    // Recalculate after flow
-    r = length(p);
-    angle = atan(p.y, p.x);
-    float vigEdge = 0.95 + breatheMod * 0.05;
-    float vig = smoothstep(vigEdge, 0.15, r);
+    // Blend colors with pattern
+    vec3 finalColor = mix(color2, baseColor, pattern) * pattern * 5.0;
     
-    // Soft fog wash
-    float fog = mix(0.94, 0.82, r * r);
-
-    // Film grain noise - very subtle
-    float grain = fbm(gl_FragCoord.xy * 0.02 + u_time * 0.03) * noiseAmt;
-
-    // Final monochrome ink composition
-    float ink = (0.04 + lines * 0.88) * vig;
-    ink = mix(ink, ink + grain, 0.6);
-    ink = mix(ink, 1.0, 0.12 * fog);
-
-    // Subtle inner glow at center
-    float centerGlow = exp(-r * r * 8.0) * 0.08 * breatheMod;
+    // Add bright highlights on peaks
+    float highlight = pow(pattern, 8.0) * 3.0;
+    finalColor += vec3(1.0, 1.0, 0.9) * highlight;
     
-    // --- NATURAL CYMATIC COLORING (Organic Teal/Blue/Purple) ---
-    // Based on real cymatic photography - subtle, desaturated, natural tones
+    // Glowing center
+    float centerGlow = exp(-r * r * 4.0) * 0.3;
+    finalColor += baseColor * centerGlow * 2.0;
     
-    // Use radial + pattern for smooth color variation
-    float colorBase = r * 1.8 + pattern * 0.4 - t * 0.08;
+    // Outer edge glow (like references)
+    float edgeGlow = exp(-(1.0 - r) * (1.0 - r) * 20.0) * 0.4;
+    finalColor += baseColor * edgeGlow;
     
-    // Natural palette: Deep blue -> Teal -> Cyan -> Pale Blue/Purple
-    // Using smooth cosine interpolation for organic transitions
-    vec3 color1 = vec3(0.05, 0.15, 0.35); // Deep blue (dark water)
-    vec3 color2 = vec3(0.10, 0.35, 0.45); // Teal
-    vec3 color3 = vec3(0.15, 0.50, 0.60); // Cyan
-    vec3 color4 = vec3(0.25, 0.45, 0.65); // Pale blue
-    vec3 color5 = vec3(0.30, 0.35, 0.55); // Subtle purple
+    // Vignette
+    finalColor *= smoothstep(1.05, 0.3, r);
     
-    // Smooth color transitions based on radius
-    vec3 baseColor;
-    if (colorBase < 0.25) {
-      baseColor = mix(color1, color2, smoothstep(0.0, 0.25, colorBase));
-    } else if (colorBase < 0.5) {
-      baseColor = mix(color2, color3, smoothstep(0.25, 0.5, colorBase));
-    } else if (colorBase < 0.75) {
-      baseColor = mix(color3, color4, smoothstep(0.5, 0.75, colorBase));
-    } else {
-      baseColor = mix(color4, color5, smoothstep(0.75, 1.0, colorBase));
-    }
+    // Tone mapping for vibrant colors
+    finalColor = finalColor / (finalColor + vec3(0.3));
     
-    // Apply pattern as water ripples (subtle intensity modulation)
-    float waterIntensity = pattern * 0.6 + 0.4; // More ambient light
-    
-    // Final composition with natural brightness
-    vec3 finalColor = baseColor * waterIntensity * 4.5;
-    
-    // Subtle specular highlights (not harsh whites)
-    float specular = pow(pattern, 12.0) * 1.2;
-    finalColor += vec3(0.6, 0.7, 0.8) * specular; // Soft blue-white highlights
-    
-    // Center glow (soft warm light, like sunlight through water)
-    finalColor += vec3(0.4, 0.5, 0.6) * centerGlow * 2.5;
-    
-    // Natural vignette
-    finalColor *= smoothstep(1.15, 0.35, r);
-
-    // Gentle tone mapping (preserve subtlety)
-    finalColor = finalColor / (finalColor + vec3(0.6));
-    
-    // Slight desaturation for realism
+    // Boost saturation
     float luma = dot(finalColor, vec3(0.299, 0.587, 0.114));
-    finalColor = mix(vec3(luma), finalColor, 0.75); // 75% saturation
+    finalColor = mix(vec3(luma), finalColor, 1.3);
     
     gl_FragColor = vec4(finalColor, 1.0);
   }
