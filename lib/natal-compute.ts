@@ -18,6 +18,8 @@ export interface NatalBaseline {
   velocity0: number
   coherence0: number
   confidence: "approximate" | "confident"
+  longitudes: number[]
+  giftRatio: number
 }
 
 // Sigmoid function for squashing
@@ -132,12 +134,17 @@ export function computeNatalBaseline(input: NatalInput): NatalBaseline {
   const velocity0 = vMin + (1 - confidenceTime) * vUncertainty
   const coherence0 = clamp01(0.5 * clarity0 + 0.5 * (1 - pressure0))
 
+  // Gift Ratio derived from harmony vs tension (Higher harmony = more Gifted state)
+  const giftRatio = clamp01(harmony * 2.0 - tension * 0.5 + 0.3)
+
   return {
     pressure0,
     clarity0,
     velocity0,
     coherence0,
     confidence: confidence as "approximate" | "confident",
+    longitudes,
+    giftRatio,
   }
 }
 

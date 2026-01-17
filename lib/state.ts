@@ -6,6 +6,8 @@ export interface MandalaState {
   clarity: number // 0-1
   velocity: number // 0-1
   coherence: number // 0-1
+  longitudes?: number[] // For relational geometry
+  giftRatio?: number // For vector scale (0 = shadow, 1 = gift)
 }
 
 export interface MandalaUniforms {

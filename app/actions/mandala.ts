@@ -9,7 +9,11 @@ export async function getDailyMandalaState(): Promise<MandalaState> {
         const now = new Date();
         const positions = calculatePlanetaryPositions(now);
         const state = computeMandalaState(positions);
-        return state;
+
+        return {
+            ...state,
+            longitudes: positions.map(p => p.longitude * (Math.PI / 180)) // Convert to radians
+        };
     } catch (error) {
         console.error("Failed to compute daily mandala state:", error);
         // Fallback to minimal state to avoid crash
